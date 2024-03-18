@@ -48,7 +48,7 @@ Technology::Technology() {
 	initialized = false;
 }
 
-void Technology::Initialize(int _featureSizeInNano, DeviceRoadmap _deviceRoadmap, TransistorType _transistorType) {
+void Technology::Initialize(double _featureSizeInNano, DeviceRoadmap _deviceRoadmap, TransistorType _transistorType) {
 	if (initialized)
 		cout << "Warning: Already initialized!" << endl;
 

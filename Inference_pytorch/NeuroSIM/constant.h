@@ -118,7 +118,7 @@
 #define CPP_1nm 40.0 // IRDS 2022
 #define POLY_WIDTH_1nm 12.0 // IRDS 2022
 #define CPP_05nm 76.0 // IRDS 2022
-#define POLY_WIDTH_05nm 144.0 // IRDS 2022
+#define POLY_WIDTH_05nm 24.0 // IRDS 2022
 
 
 #define MIN_GAP_BET_CONTACT_POLY       0.7  

@@ -119,7 +119,7 @@ void ProcessingUnitInitialize(SubArray *& subArray, InputParameter& inputParamet
 	/* Create SubArray object and link the required global objects (not initialization) */
 	inputParameter.temperature = param->temp;   // Temperature (K)
 
-	if (CFET==0) {
+	if (param->CFET==0) {
 	inputParameter.processNode = param->technode;    // Technology node
 	}
 	else {
@@ -453,15 +453,15 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
                                 }
 
                            
-                            cout << "activityRowRead : " << activityRowRead<< endl; 
-                            cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
+                            // cout << "activityRowRead : " << activityRowRead<< endl; 
+                            // cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
                          
                             }
 
                             if ((param->toggle_enforce)) {
                             subArray->activityRowRead  = param->togglerows[param->toggleindex]/param->numRowSubArray;
-                            cout << "activityRowRead : " << subArray->activityRowRead << endl; 
-                            cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
+                            // cout << "activityRowRead : " << subArray->activityRowRead << endl; 
+                            // cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
                             
                             }
 
@@ -503,13 +503,13 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 
                                 param->totalsubarrayoperations += 1;
 
-                                cout<<"readDynamic : "<<subArray->readDynamicEnergy<<endl;
-                                cout<<"Leakage : "<<subArray->leakage<<endl;    
-                                cout<<"readDynamicEnergyShiftAdd  : "<<subArray->readDynamicEnergyShiftAdd <<endl;
-                                cout<<"readDynamicEnergyAccum  : "<<subArray->readDynamicEnergyAccum <<endl;
-                                cout<<"readDynamicEnergyAdder  : "<<subArray->readDynamicEnergyAdder <<endl;
-                                cout<<"readDynamicEnergyBuffer : "<<subArray->readDynamicEnergyBuffer<<endl;
-                                cout<<"averagesubarrayE : "<<param->Macrototaldynamic/param->totalsubarrayoperations <<endl;
+                                // cout<<"readDynamic : "<<subArray->readDynamicEnergy<<endl;
+                                // cout<<"Leakage : "<<subArray->leakage<<endl;    
+                                // cout<<"readDynamicEnergyShiftAdd  : "<<subArray->readDynamicEnergyShiftAdd <<endl;
+                                // cout<<"readDynamicEnergyAccum  : "<<subArray->readDynamicEnergyAccum <<endl;
+                                // cout<<"readDynamicEnergyAdder  : "<<subArray->readDynamicEnergyAdder <<endl;
+                                // cout<<"readDynamicEnergyBuffer : "<<subArray->readDynamicEnergyBuffer<<endl;
+                                // cout<<"averagesubarrayE : "<<param->Macrototaldynamic/param->totalsubarrayoperations <<endl;
                                 
                                 param->Macrototaldynamic += subArray->readDynamicEnergy; // added for extracting
                                 param->subarray_leakage= subArray->leakage;
@@ -654,14 +654,14 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 
                     }
 
-                            cout << "activityRowRead : " << activityRowRead<< endl; 
-                            cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
+                            // cout << "activityRowRead : " << activityRowRead<< endl; 
+                            // cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
                 }
 
                 if ((param->toggle_enforce)){
                     subArray->activityRowRead  = param->togglerows[param->toggleindex]/param->numRowSubArray;
-                    cout << "activityRowRead : " << subArray->activityRowRead << endl; 
-                    cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
+                    // cout << "activityRowRead : " << subArray->activityRowRead << endl; 
+                    // cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
                             
                 }
 
@@ -703,13 +703,13 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 
                     param->totalsubarrayoperations += 1;
 
-                    cout<<"readDynamic : "<<subArray->readDynamicEnergy<<endl;
-                    cout<<"Leakage : "<<subArray->leakage<<endl;    
-                    cout<<"readDynamicEnergyShiftAdd  : "<<subArray->readDynamicEnergyShiftAdd <<endl;
-                    cout<<"readDynamicEnergyAccum  : "<<subArray->readDynamicEnergyAccum <<endl;
-                    cout<<"readDynamicEnergyAdder  : "<<subArray->readDynamicEnergyAdder <<endl;
-                    cout<<"readDynamicEnergyBuffer : "<<subArray->readDynamicEnergyBuffer<<endl;
-                    cout<<"averagesubarrayE : "<<param->Macrototaldynamic/param->totalsubarrayoperations <<endl;
+                    // cout<<"readDynamic : "<<subArray->readDynamicEnergy<<endl;
+                    // cout<<"Leakage : "<<subArray->leakage<<endl;    
+                    // cout<<"readDynamicEnergyShiftAdd  : "<<subArray->readDynamicEnergyShiftAdd <<endl;
+                    // cout<<"readDynamicEnergyAccum  : "<<subArray->readDynamicEnergyAccum <<endl;
+                    // cout<<"readDynamicEnergyAdder  : "<<subArray->readDynamicEnergyAdder <<endl;
+                    // cout<<"readDynamicEnergyBuffer : "<<subArray->readDynamicEnergyBuffer<<endl;
+                    // cout<<"averagesubarrayE : "<<param->Macrototaldynamic/param->totalsubarrayoperations <<endl;
                     
                     param->Macrototaldynamic += subArray->readDynamicEnergy; // added for extracting
                     param->subarray_leakage= subArray->leakage;
@@ -834,16 +834,16 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
                      
                             }
 
-                            cout << "activityRowRead : " << activityRowRead<< endl; 
-                            cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
+                            // cout << "activityRowRead : " << activityRowRead<< endl; 
+                            // cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
                  
                         }
 
                         if ((param->toggle_enforce) && (param->memcelltype == 4)) {
 
                         	subArray->activityRowRead  = param->togglerows[param->toggleindex]/param->numRowSubArray;
-                            cout << "activityRowRead : " << subArray->activityRowRead << endl; 
-                            cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
+                            // cout << "activityRowRead : " << subArray->activityRowRead << endl; 
+                            // cout << "addertree_togglerate : " << subArray->addertree_togglerate << endl; 
                             
                         }
 
@@ -885,13 +885,13 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 							*coreEnergyAccum += subArray->readDynamicEnergyAccum;
 							*coreEnergyOther += subArray->readDynamicEnergyOther;
 
-                            cout<<"readDynamic : "<<subArray->readDynamicEnergy<<endl;
-                            cout<<"Leakage : "<<subArray->leakage<<endl;    
-                            cout<<"readDynamicEnergyShiftAdd  : "<<subArray->readDynamicEnergyShiftAdd <<endl;
-                            cout<<"readDynamicEnergyAccum  : "<<subArray->readDynamicEnergyAccum <<endl;
-                            cout<<"readDynamicEnergyAdder  : "<<subArray->readDynamicEnergyAdder <<endl;
-                            cout<<"readDynamicEnergyBuffer : "<<subArray->readDynamicEnergyBuffer<<endl;
-                            cout<<"averagesubarrayE : "<<param->Macrototaldynamic/param->totalsubarrayoperations <<endl;
+                            // cout<<"readDynamic : "<<subArray->readDynamicEnergy<<endl;
+                            // cout<<"Leakage : "<<subArray->leakage<<endl;    
+                            // cout<<"readDynamicEnergyShiftAdd  : "<<subArray->readDynamicEnergyShiftAdd <<endl;
+                            // cout<<"readDynamicEnergyAccum  : "<<subArray->readDynamicEnergyAccum <<endl;
+                            // cout<<"readDynamicEnergyAdder  : "<<subArray->readDynamicEnergyAdder <<endl;
+                            // cout<<"readDynamicEnergyBuffer : "<<subArray->readDynamicEnergyBuffer<<endl;
+                            // cout<<"averagesubarrayE : "<<param->Macrototaldynamic/param->totalsubarrayoperations <<endl;
 
                             param->totalsubarrayoperations += 1;
                             param->Macrototaldynamic += subArray->readDynamicEnergy; // added for extracting

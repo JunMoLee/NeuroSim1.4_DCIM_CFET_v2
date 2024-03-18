@@ -797,13 +797,13 @@ void CalculateGateCapacitance(
 
 				if (NumNSheet > 0) {
 					if (NumNSheet <= maxNumNSheet) { /* No folding */
-						unitWidthDrainN = tech.featureSize * MIN_GAP_BET_GATE_POLY_FINFET;
+						unitWidthDrainN = tech.featureSize *modified_MIN_GAP_BET_GATE_POLY_FINFET;
 						unitWidthSourceN = unitWidthDrainN;
 						heightDrainN =  NumNSheet * tech.widthFin;
 					} else {    /* Folding */
 						numFoldedNMOS = (int)(ceil(NumNSheet / maxNumNSheet));
-						unitWidthDrainN = (int)ceil((double)(numFoldedNMOS+1)/2) * tech.featureSize * MIN_GAP_BET_GATE_POLY_FINFET;
-						unitWidthSourceN = (int)floor((double)(numFoldedNMOS+1)/2) * tech.featureSize * MIN_GAP_BET_GATE_POLY_FINFET;
+						unitWidthDrainN = (int)ceil((double)(numFoldedNMOS+1)/2) * tech.featureSize * modified_MIN_GAP_BET_GATE_POLY_FINFET;
+						unitWidthSourceN = (int)floor((double)(numFoldedNMOS+1)/2) * tech.featureSize * modified_MIN_GAP_BET_GATE_POLY_FINFET;
 						heightDrainN = maxNumNSheet * tech.widthFin; // modified from heightDrainN = (maxNumNFin-1) * tech.PitchFin + 2 * tech.widthFin/2;
 					}
 				} else {
@@ -879,15 +879,17 @@ void CalculateGateCapacitance(
 			widthDrainN = widthDrainP = widthDrainSidewallP = widthDrainSidewallN = 0;
 		}
 		/* Junction capacitance */
+        double capDrainBottomN;
+        double capDrainBottomP ;
 
         if (param->CFET==0){
-		double capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction;
-		double capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction;
+		capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction;
+		capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction;
         }
 
         else{
-		double capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction_CFETN;
-		double capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction_CFETP;            
+		capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction_CFETN;
+		capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction_CFETP;            
         }
 
 
@@ -1190,13 +1192,13 @@ void CalculateGateCapacitance_GAA(
 
         if (NumNSheet > 0) {
             if (NumNSheet <= maxNumNSheet) { /* No folding */
-                unitWidthDrainN = tech.featureSize * MIN_GAP_BET_GATE_POLY_FINFET;
+                unitWidthDrainN = tech.featureSize * modified_MIN_GAP_BET_GATE_POLY_FINFET;
                 unitWidthSourceN = unitWidthDrainN;
                 heightDrainN =  NumNSheet * modified_NwidthFin;
             } else {    /* Folding */
                 numFoldedNMOS = (int)(ceil(NumNSheet / maxNumNSheet));
-                unitWidthDrainN = (int)ceil((double)(numFoldedNMOS+1)/2) * tech.featureSize * MIN_GAP_BET_GATE_POLY_FINFET;
-                unitWidthSourceN = (int)floor((double)(numFoldedNMOS+1)/2) * tech.featureSize * MIN_GAP_BET_GATE_POLY_FINFET;
+                unitWidthDrainN = (int)ceil((double)(numFoldedNMOS+1)/2) * tech.featureSize * modified_MIN_GAP_BET_GATE_POLY_FINFET;
+                unitWidthSourceN = (int)floor((double)(numFoldedNMOS+1)/2) * tech.featureSize * modified_MIN_GAP_BET_GATE_POLY_FINFET;
                 heightDrainN = maxNumNSheet * modified_NwidthFin; // modified from heightDrainN = (maxNumNFin-1) * tech.PitchFin + 2 * tech.widthFin/2;
             }
         } else {
@@ -1271,9 +1273,24 @@ void CalculateGateCapacitance_GAA(
 		default:
 			widthDrainN = widthDrainP = widthDrainSidewallP = widthDrainSidewallN = 0;
 		}
+
 		/* Junction capacitance */
-		double capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction;
-		double capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction;
+        double capDrainBottomN;
+        double capDrainBottomP ;
+
+        if (param->CFET==0){
+		capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction;
+		capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction;
+        }
+
+        else{
+		capDrainBottomN = widthDrainN * heightDrainN * tech.capJunction_CFETN;
+		capDrainBottomP = widthDrainP * heightDrainP * tech.capJunction_CFETP;     
+         cout<<unitWidthDrainP<<endl;
+         cout<<modified_MIN_GAP_BET_GATE_POLY_FINFET<<endl;
+        cout<<        " w : "<<widthDrainN <<" h : "<< heightDrainN << " cj : "<< tech.capJunction_CFETN<<endl;
+        cout<<       " w : "<< widthDrainP << " h : "<<heightDrainP << " cj : "<<tech.capJunction_CFETP<<endl;
+        }
 
 		/* Sidewall capacitance */	// FIXME
 		double capDrainSidewallN, capDrainSidewallP;

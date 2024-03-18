@@ -129,10 +129,43 @@ Param::Param() {
 	clkFreq = 1e9;                      // Clock frequency
 	temp = 300;                         // Temperature (K)
 
+
 	technode = 1;					    // Technology node (nm)
 	CFET_technode=0.5;
-	CFET=1;
 	
+	GDI_SPICE=0;
+	GDI_NeuroSim=0;
+	GDI=0;
+
+const int 
+tech=10;
+
+if (tech <13) CFET=0;
+else CFET=1;
+
+if (CFET==0) {
+	switch (tech){
+		case 0: technode = 130; break;  
+		case 1:technode =  90; break;  
+		case 2: technode =  65; break;  
+		case 3: technode =  45; break; 
+		case 4: technode =  32; break;  
+		case 5: technode =  22; break; 
+		case 6: technode =  14; break;
+		case 7: technode =  10; break; 
+		case 8: technode =  7; break; 
+		case 9: technode =  5; break;
+		case 10: technode =  3; break;
+		case 11: technode =  2; break;
+		case 12: technode =  1; break;
+
+	}
+}
+else {
+
+if (tech==13) technode =  0.5; CFET_technode=0.5;
+
+}	
 	// 1.4 update: Activation implementation option added
 	Activationtype=true; // true: SRAM, False: RRAM
 
@@ -153,7 +186,7 @@ Param::Param() {
 	realtime_toggle=1;	
 	}
 
-	toggleindex=1; 
+	toggleindex=0; 
 	// 1.4 update
 	sizingfactor_MUX=1; // sizing for the final driver of mux in rowdecoder.cpp (important for technology scaling)
 	sizingfactor_WLdecoder=1; // sizing for the final driver of WLdecoder in rowdecoder.cpp (important for technology scaling)

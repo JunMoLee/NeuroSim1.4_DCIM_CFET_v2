@@ -278,13 +278,16 @@ void ShiftAdd::CalculatePower(double numRead) {
 					energytemp = 0.0048e-12;
 				}
 				else if (tech.featureSize == 2 * 1e-9){
-					energytemp = 0.0019e-12;
+					//energytemp = 0.0019e-12; // old values 
+					energytemp = 0.0031e-12;
 				}
 				else if (tech.featureSize == 1 * 1e-9){
-					energytemp = 0.0014e-12;
+					//energytemp = 0.0014e-12; // old values 
+					energytemp = 0.0021e-12;
 				}
 				else if (tech.featureSize == 0.5 * 1e-9){
-					energytemp = 0.0014e-12;
+					//energytemp = 0.0014e-12; // old values 
+					energytemp = 0.0018e-12;
 				}
 				else{
 					cout << "[ShiftAdd] DCIM shiftadd energy not defined" << endl;

@@ -608,13 +608,24 @@ int main(int argc, char * argv[]) {
 
     */
 
+    // caplist
+    string date="240316";
+    fstream read5;
+    read5.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_caplist.csv",fstream::app);
+    read5<<"technode"<<", "<<param->technode<<", ";
+    read5<<param->adderinputcap <<", ";
+    read5<<param->adderoutputcap <<", ";
+    read5<<tech.vdd <<", ";
+    read5<<param->dff_cap<<", ";
+    read5<< endl;
+
     // 1.4+ DCIM 
     fstream read4;
-    string date="240316";
+    
     double TOPS_W= 2*256*64/( param->Macrototaldynamic*4/param->totalsubarrayoperations)*1/pow(10,12) ;
     double TOPS_mm= 2*256*64/ param->Macrototallatency/( param->subarray_height *param->subarray_width) /pow(10,6)/pow(10,12);
 
-    read4.open("/nethome/jlee4034/DNN_NeuroSim_V1.4_DCIM/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Macrobreakdown.csv",fstream::app);
+    read4.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Macrobreakdown.csv",fstream::app);
     
     read4<<"technode"<<", "<<param->technode<<", "<<"toggleindex"<<", "<<param->toggleindex<<", ";
     read4<<"mem cell type"<< ", "<< param->memcelltype<<", ";

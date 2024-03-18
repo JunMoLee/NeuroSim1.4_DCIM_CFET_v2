@@ -70,9 +70,9 @@ public:
 	int technode;
 	double CFET_technode;
 	double CFET;
-	double GDI_SPICE;
-	double GDI_NeuroSim;
-	double GDI;
+	double GDI_SPICE=0;
+	double GDI_NeuroSim=0;
+	double GDI=0;
 	
 	int neuro, multifunctional, parallelWrite, parallelRead;
 	int numlut, numColMuxed, numWriteColMuxed, levelOutput, avgWeightBit, numBitInput;
@@ -162,7 +162,7 @@ public:
 	double numcount=0;
 	double unitactivity=0;
 	double averageTR=0;
-	double DCIM_wsparsity=0.5;
+
 
 	// 1.4+ DCIM
 	// energy breakdown extraction

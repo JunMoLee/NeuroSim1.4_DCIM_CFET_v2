@@ -379,16 +379,23 @@ void AdderTree_DCIM::CalculatePower(double numRead, int numUnitAdd, double toggl
 			}
 			}
 			else if (tech.featureSize == 2 * 1e-9){
-			a= 0.1596;
-			b= 0.373;
-			c= 0.0565;
-			d=0.2417;
+				/* old values
+					a= 0.1596;
+					b= 0.373;
+					c= 0.0565;
+					d=0.2417;
+				*/
+
+			a= 0.2274;
+			b= 0.5354;
+			c= 0.0898;
+			d=0.371;
 			if (param->realtime_toggle){
 
-			a= 0.1596;
-			b= 0.373;
-			c= 0.0565;
-			d=0.2417;
+			a= 0.2274;
+			b= 0.5354;
+			c= 0.0898;
+			d=0.371;
 			}
 
 			else {
@@ -400,16 +407,50 @@ void AdderTree_DCIM::CalculatePower(double numRead, int numUnitAdd, double toggl
 			}
 			}
 			else if (tech.featureSize == 1 * 1e-9){
-			a=0.1096;
-			b=0.2569;
-			c=0.04;
-			d=0.1696;
+				/* old values
+					a=0.1096;
+					b=0.2569;
+					c=0.04;
+					d=0.1696;
+				*/
+			a=0.1653;
+			b=0.3894;
+			c=0.0633;
+			d=0.2642;
 			if (param->realtime_toggle){
 
-			a=0.1096;
-			b=0.2569;
-			c=0.04;
-			d=0.1696;
+			a=0.1653;
+			b=0.3894;
+			c=0.0633;
+			d=0.2642;
+			}
+
+			else {
+			energytemp [0]= 0;
+			energytemp [1]= 0.065e-12;
+			energytemp [2]= 0.100e-12;
+			energytemp [3]= 0.128e-12;
+			energytemp [4]= 0;
+
+			}
+			}
+			else if (tech.featureSize == 0.5 * 1e-9){
+				/* old values
+				a=0.1653;
+				b=0.3894;
+				c=0.0633;
+				d=0.2642;
+				*/
+			a=0.1368;
+			b=0.3205;
+			c=0.0502;
+			d=0.2127;
+			if (param->realtime_toggle){
+
+			a=0.1368;
+			b=0.3205;
+			c=0.0502;
+			d=0.2127;
 			}
 
 			else {

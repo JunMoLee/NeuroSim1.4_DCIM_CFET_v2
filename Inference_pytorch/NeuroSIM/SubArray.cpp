@@ -310,7 +310,15 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			param-> resRow_DCIM = param->Metal0_unitwireresis;
 			param-> resCol_DCIM = param->Metal1_unitwireresis;
 		} else {
+			capRow1 = lengthRow * 0.2e-15/1e-6;	// BL for 1T1R, WL for Cross-point and SRAM
+			capRow2 = lengthRow * 0.2e-15/1e-6;	// WL for 1T1R
+			capCol = lengthCol * 0.2e-15/1e-6;
 
+			resRow = lengthRow * param->Metal0_unitwireresis;
+			resCol = lengthCol * param->Metal1_unitwireresis; 
+
+			param-> resRow_DCIM = param->Metal0_unitwireresis;
+			param-> resCol_DCIM = param->Metal1_unitwireresis;
 		}
 
 	}
@@ -583,7 +591,7 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 		precharger.Initialize(numCol/4, resCol, activityColWrite, numReadCellPerOperationNeuro, numWriteCellPerOperationNeuro);
 		sramWriteDriver.Initialize(numCol/4, activityColWrite, numWriteCellPerOperationNeuro);
 		
-			}
+		}
 
 
     } else if (cell.memCellType == Type::RRAM || cell.memCellType == Type::FeFET) {
@@ -1575,9 +1583,12 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 				{
 					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 7.0/15.0, 23.0/15.0);	
 				}
+	  				  else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput,  1.0, 4.0/9.0, 14.0/9.0 ); }	
 				else {
 					CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
 				}
+
 				// record for debug
 				param-> capNORInput = capNORInput;
 				param-> capNOROutput = capNOROutput;
@@ -1608,7 +1619,9 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 						CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 22.0/15.0, 9.0/15.0);	
 					} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout)) {
 						CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 23.0/15.0, 7.0/15.0);	
-					} else {
+					} else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
+					CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 14.0/9.0, 4.0/9.0 ); }	
+					else {
 						CalculateGateCapacitance(NAND, 2, widthNandN, widthNandP, hNand, tech, &capNandInput, &capNandOutput);
 					}
 					// param->buffernumber: buffer number 
@@ -1644,19 +1657,19 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 
 
 
-				double t2 = targetdriveres * (drivecapout ) * 0.69 
-				+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
-				+ (-param->DCIMline_C1  * param->DCIMline_R1 *sectionnum ) * 0.38
-				+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum+1) * sectionnum /2.0 * 0.38
-				+ (targetdriveres+ (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
-				
+						double t2 = targetdriveres * (drivecapout ) * 0.69 
+						+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
+						+ (-param->DCIMline_C1  * param->DCIMline_R1 *sectionnum ) * 0.38
+						+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum+1) * sectionnum /2.0 * 0.38
+						+ (targetdriveres+ (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
+						
 
-				double t1 =  targetdriveres * (drivecapout ) * 0.69 
-				+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
-				+ (-param->DCIMline_C1  * param->DCIMline_R2 *sectionnum ) * 0.38
-				+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum-1) * sectionnum /2.0 * 0.38;
-				+ (targetdriveres + (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
-				
+						double t1 =  targetdriveres * (drivecapout ) * 0.69 
+						+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
+						+ (-param->DCIMline_C1  * param->DCIMline_R2 *sectionnum ) * 0.38
+						+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum-1) * sectionnum /2.0 * 0.38;
+						+ (targetdriveres + (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
+						
 
 					
 						param-> drivecapin = drivecapin;
@@ -1739,6 +1752,8 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 				{
 					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 7.0/15.0, 23.0/15.0);	
 				}
+	  				  else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput,  1.0, 4.0/9.0, 14.0/9.0 ); }	
 				else {
 					CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
 				}
@@ -1772,7 +1787,9 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 						CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 22.0/15.0, 9.0/15.0);	
 					} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout)) {
 						CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 23.0/15.0, 7.0/15.0);	
-					} else {
+					} else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
+					CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 14.0/9.0, 4.0/9.0 ); }	
+					else {
 						CalculateGateCapacitance(NAND, 2, widthNandN, widthNandP, hNand, tech, &capNandInput, &capNandOutput);
 					}
 					// param->buffernumber: buffer number 
@@ -1808,19 +1825,19 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 
 
 
-				double t2 = targetdriveres * (drivecapout ) * 0.69 
-				+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
-				+ (-param->DCIMline_C1  * param->DCIMline_R1 *sectionnum ) * 0.38
-				+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum+1) * sectionnum /2.0 * 0.38
-				+ (targetdriveres+ (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
-				
+						double t2 = targetdriveres * (drivecapout ) * 0.69 
+						+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
+						+ (-param->DCIMline_C1  * param->DCIMline_R1 *sectionnum ) * 0.38
+						+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum+1) * sectionnum /2.0 * 0.38
+						+ (targetdriveres+ (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
+						
 
-				double t1 =  targetdriveres * (drivecapout ) * 0.69 
-				+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
-				+ (-param->DCIMline_C1  * param->DCIMline_R2 *sectionnum ) * 0.38
-				+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum-1) * sectionnum /2.0 * 0.38;
-				+ (targetdriveres + (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
-				
+						double t1 =  targetdriveres * (drivecapout ) * 0.69 
+						+ (param->DCIMline_C1+param->DCIMline_C2) * sectionnum * targetdriveres * 0.69  
+						+ (-param->DCIMline_C1  * param->DCIMline_R2 *sectionnum ) * 0.38
+						+ (param->DCIMline_C1+param->DCIMline_C2) * (param->DCIMline_R1 + param->DCIMline_R2) * (sectionnum-1) * sectionnum /2.0 * 0.38;
+						+ (targetdriveres + (param->DCIMline_R1 + param->DCIMline_R2) * sectionnum )* param-> drivecapin * 0.69;
+						
 
 					
 						param-> drivecapin = drivecapin;

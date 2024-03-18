@@ -127,11 +127,11 @@ void Adder_DCIM::CalculateArea(double _newHeight, double _newWidth, AreaModify _
 		// NAND2 capacitance
 
 		if ((tech.featureSize == 2e-9) && param->speciallayout) { 
-			CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 2.0/3.0, 22.0/15.0, 8.0/15.0); }
+			CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1, 22.0/15.0, 8.0/15.0); }
 	    else if ((tech.featureSize == 1e-9) && param->speciallayout) {
-			CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 2.0/3.0, 23.0/15.0, 7.0/15.0); }
+			CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1, 23.0/15.0, 7.0/15.0); }
 	    else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
-			CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 2.0/3.0, 14.0/9.0, 4.0/9.0); }		
+			CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1, 14.0/9.0, 4.0/9.0); }		
 		else {
 			CalculateGateCapacitance(NAND, 2, widthNandN, widthNandP, hNand, tech, &capNandInput, &capNandOutput);
 		}
@@ -261,13 +261,13 @@ void Adder_DCIM::CalculatePower(double numRead, int numAdderPerOperation) {
 		
 		if ((tech.featureSize == 2e-9) && param->speciallayout) { 
 				/* Leakage power */
-		leakage += CalculateGateLeakage(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder * 2/3; }
+		leakage += CalculateGateLeakage(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder * 1; }
 	    else if ((tech.featureSize == 1e-9) && param->speciallayout) {
 				/* Leakage power */
-		leakage += CalculateGateLeakage(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder * 2/3;}
+		leakage += CalculateGateLeakage(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder * 1;}
 		else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
 				/* Leakage power */
-		leakage += CalculateGateLeakage(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder * 2/3;}
+		leakage += CalculateGateLeakage(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder * 1;}
 		else {
 				/* Leakage power */
 		leakage += CalculateGateLeakage(NAND, 2, widthNandN, widthNandP, inputParameter.temperature, tech) * tech.vdd * 9 * numBit * numAdder;
