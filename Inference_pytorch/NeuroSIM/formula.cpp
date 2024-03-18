@@ -116,6 +116,8 @@ double CalculateGateArea(	// Calculate layout area and width of logic gate given
 		heightTransistorRegion *= 1;
 
 	}
+
+
 	
     double	ratio = widthPMOS / (widthPMOS + widthNMOS);
     double maxWidthPMOS, maxWidthNMOS;
@@ -154,7 +156,9 @@ double CalculateGateArea(	// Calculate layout area and width of logic gate given
     CPP_advanced = CPP_05nm;
     else
     CPP *= 1;
-    
+
+
+
 	// 1.4 update: replace with the added variables (CPP)
     if (tech.featureSize >= 22 * 1e-9 || tech.transistorType != conventional) { // Bulk
 
@@ -427,6 +431,7 @@ double CalculateGateArea(	// Calculate layout area and width of logic gate given
 
     *width = MAX(widthRegionN, widthRegionP);
     *height = heightTransistorRegion;	// Fixed standard cell height
+
 
     return (*width)*(*height);
 }

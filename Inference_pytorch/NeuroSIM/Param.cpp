@@ -136,12 +136,13 @@ Param::Param() {
 	GDI_SPICE=0;
 	GDI_NeuroSim=0;
 	GDI=0;
+	
 
 const int 
-tech=10;
+tech=13;
 
 if (tech <13) CFET=0;
-else CFET=1;
+else { CFET=1; GDI=1; }
 
 if (CFET==0) {
 	switch (tech){
@@ -187,6 +188,7 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 	}
 
 	toggleindex=0; 
+	sparsitycalc=1;
 	// 1.4 update
 	sizingfactor_MUX=1; // sizing for the final driver of mux in rowdecoder.cpp (important for technology scaling)
 	sizingfactor_WLdecoder=1; // sizing for the final driver of WLdecoder in rowdecoder.cpp (important for technology scaling)

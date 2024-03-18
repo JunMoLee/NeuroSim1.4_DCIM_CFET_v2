@@ -77,6 +77,8 @@ void SRAMWriteDriver::CalculateArea(double _newHeight, double _newWidth, AreaMod
 		double hUnit = hInv * 3;
 		double wUnit = wInv;
 
+
+
 		if (_newWidth && _option==NONE) {
 			int numRowUnit;  // Number of rows of unit
 			int numUnitPerRow;
@@ -87,6 +89,8 @@ void SRAMWriteDriver::CalculateArea(double _newHeight, double _newWidth, AreaMod
 			if (numUnitPerRow > numCol) {
 				numUnitPerRow = numCol;
 			}
+
+			
 			numRowUnit = (int)ceil((double)numCol/numUnitPerRow);
 			width = _newWidth;
 			height = numRowUnit * hUnit;
@@ -95,7 +99,8 @@ void SRAMWriteDriver::CalculateArea(double _newHeight, double _newWidth, AreaMod
 			height = hUnit;
 		}
 		area = height * width;
-		
+
+
 		// Modify layout
 		newHeight = _newHeight;
 		newWidth = _newWidth;
@@ -109,7 +114,7 @@ void SRAMWriteDriver::CalculateArea(double _newHeight, double _newWidth, AreaMod
 			default:    // NONE
 				break;
 		}
-		
+	
 		// Capacitance
 		// INV
 		CalculateGateCapacitance(INV, 1, widthInvN, widthInvP, hInv, tech, &capInvInput, &capInvOutput);

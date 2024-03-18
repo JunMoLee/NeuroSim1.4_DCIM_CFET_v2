@@ -215,8 +215,9 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			lengthRow = (double)numCol * DCIM_CPP* 7.5* tech.featureSize; // the layout is based on TSMC 22 nm DCIM cell @ ISSCC 2021
 			lengthCol = (double)numRow * DCIM_CH * tech.featureSize;
 			
+
 		} else {
-			double DCIM_CPP, DCIM_CH;
+			double DCIM_CPP, DCIM_CH, DCIM_FP;
 
 			if (tech.featureSize >= 22 * 1e-9) {
 				DCIM_CPP = MIN_GAP_BET_GATE_POLY + POLY_WIDTH ;
@@ -245,12 +246,16 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			} else if (tech.featureSize == 0.5 * 1e-9) {
 				DCIM_CPP = CPP_05nm;
 				DCIM_CH = MAX_TRANSISTOR_HEIGHT_05nm;
+				DCIM_FP = tech.PitchFin;
 			} 
 
-			param->finalCellWidth=DCIM_CPP* 7.5;
-			param->finalCellHeight=DCIM_CH;
-			lengthRow = (double)numCol * DCIM_CPP* 7.5* tech.featureSize; // the layout is based on TSMC 22 nm DCIM cell @ ISSCC 2021
-			lengthCol = (double)numRow * DCIM_CH * tech.featureSize;
+			param->finalCellWidth = DCIM_FP* 8/(tech.featureSize);
+			param->finalCellHeight = 2*DCIM_CPP;
+
+			
+			lengthRow = (double)numCol * DCIM_FP* 8; // the layout is based on TSMC 22 nm DCIM cell @ ISSCC 2021
+			lengthCol = (double)numRow * 2*DCIM_CPP * tech.featureSize;
+		
 			
 		}
 
@@ -459,138 +464,138 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 	
 		else if (cell.memCellType == Type::DCIM) {
 			if (param->GDI==0) {
-		// firstly calculate the CMOS resistance and capacitance
-		resCellAccess = CalculateOnResistance(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, inputParameter.temperature, tech);
-		capCellAccess = CalculateDrainCap(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech);
-		cell.capSRAMCell = capCellAccess + CalculateDrainCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
-						+ CalculateDrainCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, PMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
-						+ CalculateGateCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech) + CalculateGateCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech);
-		
-		// use the TSMC layout
-		if (conventionalSequential) {
-			
-			// set the adder bit
-			int adderBit = param->parallel_weightprecision+ceil(log2(numRow));	// used for shift-add argument
-			
-			// Initialize the accumulation unit
-			addertree.Initialize((double)numRow, param->parallel_weightprecision, 1, clkFreq);
-			dff.Initialize((param->parallel_weightprecision+ceil(log2(numRow))), clkFreq);	// should be multiplied by 64 later		
+				// firstly calculate the CMOS resistance and capacitance
+				resCellAccess = CalculateOnResistance(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, inputParameter.temperature, tech);
+				capCellAccess = CalculateDrainCap(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech);
+				cell.capSRAMCell = capCellAccess + CalculateDrainCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
+								+ CalculateDrainCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, PMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
+								+ CalculateGateCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech) + CalculateGateCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech);
+				
+				// use the TSMC layout
+				if (conventionalSequential) {
+					
+					// set the adder bit
+					int adderBit = param->parallel_weightprecision+ceil(log2(numRow));	// used for shift-add argument
+					
+					// Initialize the accumulation unit
+					addertree.Initialize((double)numRow, param->parallel_weightprecision, 1, clkFreq);
+					dff.Initialize((param->parallel_weightprecision+ceil(log2(numRow))), clkFreq);	// should be multiplied by 64 later		
 
-			heightArray = lengthCol;
-			
-			// Aligned along the height
-			// Needed to calculate the resistance of the row for switch matrix argument
-			dff.CalculateArea(heightArray, NULL, NONE);	// should be multiplied by 64 later
-			addertree.CalculateArea(heightArray, NULL, NONE); // should be multiplied by 64 later
+					heightArray = lengthCol;
+					
+					// Aligned along the height
+					// Needed to calculate the resistance of the row for switch matrix argument
+					dff.CalculateArea(heightArray, NULL, NONE);	// should be multiplied by 64 later
+					addertree.CalculateArea(heightArray, NULL, NONE); // should be multiplied by 64 later
 
-			// res of one section 
-			resRowforSwitchMatrix = ( (addertree.width + dff.width + shiftAddInput.width) * (param->numColSubArray/4/param->parallel_weightprecision-1) +  lengthRow/4) / (lengthRow) * resRow;
-			
-			// Handle the case where the buffers are inserted
-			if (param->buffernumber>0) {
+					// res of one section 
+					resRowforSwitchMatrix = ( (addertree.width + dff.width + shiftAddInput.width) * (param->numColSubArray/4/param->parallel_weightprecision-1) +  lengthRow/4) / (lengthRow) * resRow;
+					
+					// Handle the case where the buffers are inserted
+					if (param->buffernumber>0) {
 
-				sectionres = resRowforSwitchMatrix / (param->buffernumber +1);
-				targetdriveres = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize*param->buffersizeratio, NMOS, inputParameter.temperature, tech) ;
-				param->targetdriveres= targetdriveres;
+						sectionres = resRowforSwitchMatrix / (param->buffernumber +1);
+						targetdriveres = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize*param->buffersizeratio, NMOS, inputParameter.temperature, tech) ;
+						param->targetdriveres= targetdriveres;
 
-				widthInvN  = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, NMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize;
-				widthInvP = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, PMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize ;
+						widthInvN  = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, NMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize;
+						widthInvP = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, PMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize ;
 
-				if (tech.featureSize <= 14*1e-9){
-					widthInvN = 2* ceil(widthInvN/tech.featureSize) * tech.featureSize;
-					widthInvP = 2* ceil(widthInvP/tech.featureSize) * tech.featureSize;
-				}				
+						if (tech.featureSize <= 14*1e-9){
+							widthInvN = 2* ceil(widthInvN/tech.featureSize) * tech.featureSize;
+							widthInvP = 2* ceil(widthInvP/tech.featureSize) * tech.featureSize;
+						}				
 
-				wlSwitchMatrix.Initialize(ROW_MODE, numRow, sectionres, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
-			}	
+						wlSwitchMatrix.Initialize(ROW_MODE, numRow, sectionres, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+					}	
 
+					else {
+						wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRowforSwitchMatrix, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+					}
+
+					// wl decoder, senseAmp for SRAM array, be cautious about the arguments
+					wlDecoder.Initialize(REGULAR_ROW, (int)ceil(log2(numRow)), false, false);
+					senseAmp.Initialize(numCol/4, false, cell.minSenseVoltage, lengthRow/(numCol), clkFreq, numReadCellPerOperationNeuro);	
+
+					// for multi-bit, add numReadPulse
+					if (numReadPulse > 1) {
+						shiftAddInput.Initialize(1, adderBit, clkFreq, spikingMode, numReadPulse);
+						shiftAddInput.CalculateArea(heightArray, NULL, NONE);
+					}
+					
+				} 	
+
+				// be cautious about the arguments
+				precharger.Initialize(numCol/4, resCol, activityColWrite, numReadCellPerOperationNeuro, numWriteCellPerOperationNeuro);
+				sramWriteDriver.Initialize(numCol/4, activityColWrite, numWriteCellPerOperationNeuro);
+				
+			}
 			else {
-				wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRowforSwitchMatrix, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
-			}
+				// firstly calculate the CMOS resistance and capacitance
+				resCellAccess = CalculateOnResistance(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, inputParameter.temperature, tech);
+				capCellAccess = CalculateDrainCap(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech);
+				cell.capSRAMCell = capCellAccess + CalculateDrainCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
+								+ CalculateDrainCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, PMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
+								+ CalculateGateCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech) + CalculateGateCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech);
+				
+				// use the TSMC layout
+				if (conventionalSequential) {
+					
+					// set the adder bit
+					int adderBit = param->parallel_weightprecision+ceil(log2(numRow));	// used for shift-add argument
+					
+					// Initialize the accumulation unit
+					addertree.Initialize((double)numRow, param->parallel_weightprecision, 1, clkFreq);
+					dff.Initialize((param->parallel_weightprecision+ceil(log2(numRow))), clkFreq);	// should be multiplied by 64 later		
 
-			// wl decoder, senseAmp for SRAM array, be cautious about the arguments
-			wlDecoder.Initialize(REGULAR_ROW, (int)ceil(log2(numRow)), false, false);
-			senseAmp.Initialize(numCol/4, false, cell.minSenseVoltage, lengthRow/(numCol), clkFreq, numReadCellPerOperationNeuro);	
+					heightArray = lengthCol;
+					
+					// Aligned along the height
+					// Needed to calculate the resistance of the row for switch matrix argument
+					dff.CalculateArea(heightArray, NULL, NONE);	// should be multiplied by 64 later
+					addertree.CalculateArea(heightArray, NULL, NONE); // should be multiplied by 64 later
 
-			// for multi-bit, add numReadPulse
-			if (numReadPulse > 1) {
-				shiftAddInput.Initialize(1, adderBit, clkFreq, spikingMode, numReadPulse);
-				shiftAddInput.CalculateArea(heightArray, NULL, NONE);
-			}
-			
-		} 	
+					// res of one section 
+					resRowforSwitchMatrix = ( (addertree.width + dff.width + shiftAddInput.width) * (param->numColSubArray/4/param->parallel_weightprecision-1) +  lengthRow/4) / (lengthRow) * resRow;
+					
+					// Handle the case where the buffers are inserted
+					if (param->buffernumber>0) {
 
-		// be cautious about the arguments
-		precharger.Initialize(numCol/4, resCol, activityColWrite, numReadCellPerOperationNeuro, numWriteCellPerOperationNeuro);
-		sramWriteDriver.Initialize(numCol/4, activityColWrite, numWriteCellPerOperationNeuro);
-		
-			}
-			else {
-		// firstly calculate the CMOS resistance and capacitance
-		resCellAccess = CalculateOnResistance(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, inputParameter.temperature, tech);
-		capCellAccess = CalculateDrainCap(cell.widthAccessCMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech);
-		cell.capSRAMCell = capCellAccess + CalculateDrainCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, NMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
-						+ CalculateDrainCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, PMOS, MAX_TRANSISTOR_HEIGHT * tech.featureSize, tech) 
-						+ CalculateGateCap(cell.widthSRAMCellNMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech) + CalculateGateCap(cell.widthSRAMCellPMOS * ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, tech);
-		
-		// use the TSMC layout
-		if (conventionalSequential) {
-			
-			// set the adder bit
-			int adderBit = param->parallel_weightprecision+ceil(log2(numRow));	// used for shift-add argument
-			
-			// Initialize the accumulation unit
-			addertree.Initialize((double)numRow, param->parallel_weightprecision, 1, clkFreq);
-			dff.Initialize((param->parallel_weightprecision+ceil(log2(numRow))), clkFreq);	// should be multiplied by 64 later		
+						sectionres = resRowforSwitchMatrix / (param->buffernumber +1);
+						targetdriveres = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize*param->buffersizeratio, NMOS, inputParameter.temperature, tech) ;
+						param->targetdriveres= targetdriveres;
 
-			heightArray = lengthCol;
-			
-			// Aligned along the height
-			// Needed to calculate the resistance of the row for switch matrix argument
-			dff.CalculateArea(heightArray, NULL, NONE);	// should be multiplied by 64 later
-			addertree.CalculateArea(heightArray, NULL, NONE); // should be multiplied by 64 later
+						widthInvN  = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, NMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize;
+						widthInvP = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, PMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize ;
 
-			// res of one section 
-			resRowforSwitchMatrix = ( (addertree.width + dff.width + shiftAddInput.width) * (param->numColSubArray/4/param->parallel_weightprecision-1) +  lengthRow/4) / (lengthRow) * resRow;
-			
-			// Handle the case where the buffers are inserted
-			if (param->buffernumber>0) {
+						if (tech.featureSize <= 14*1e-9){
+							widthInvN = 2* ceil(widthInvN/tech.featureSize) * tech.featureSize;
+							widthInvP = 2* ceil(widthInvP/tech.featureSize) * tech.featureSize;
+						}				
 
-				sectionres = resRowforSwitchMatrix / (param->buffernumber +1);
-				targetdriveres = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize*param->buffersizeratio, NMOS, inputParameter.temperature, tech) ;
-				param->targetdriveres= targetdriveres;
+						wlSwitchMatrix.Initialize(ROW_MODE, numRow, sectionres, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+					}	
 
-				widthInvN  = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, NMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize;
-				widthInvP = CalculateOnResistance(((tech.featureSize <= 14*1e-9)? 2:1)*tech.featureSize, PMOS, inputParameter.temperature, tech) / targetdriveres * tech.featureSize ;
+					else {
+						wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRowforSwitchMatrix, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
+					}
 
-				if (tech.featureSize <= 14*1e-9){
-					widthInvN = 2* ceil(widthInvN/tech.featureSize) * tech.featureSize;
-					widthInvP = 2* ceil(widthInvP/tech.featureSize) * tech.featureSize;
-				}				
+					// wl decoder, senseAmp for SRAM array, be cautious about the arguments
+					wlDecoder.Initialize(REGULAR_ROW, (int)ceil(log2(numRow)), false, false);
+					senseAmp.Initialize(numCol/4, false, cell.minSenseVoltage, lengthRow/(numCol), clkFreq, numReadCellPerOperationNeuro);	
 
-				wlSwitchMatrix.Initialize(ROW_MODE, numRow, sectionres, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
-			}	
+					// for multi-bit, add numReadPulse
+					if (numReadPulse > 1) {
+						shiftAddInput.Initialize(1, adderBit, clkFreq, spikingMode, numReadPulse);
+						shiftAddInput.CalculateArea(heightArray, NULL, NONE);
+					}
+					
+				} 	
 
-			else {
-				wlSwitchMatrix.Initialize(ROW_MODE, numRow, resRowforSwitchMatrix, true, false, activityRowRead, activityColWrite, numWriteCellPerOperationMemory, numWriteCellPerOperationNeuro, 1, clkFreq);
-			}
-
-			// wl decoder, senseAmp for SRAM array, be cautious about the arguments
-			wlDecoder.Initialize(REGULAR_ROW, (int)ceil(log2(numRow)), false, false);
-			senseAmp.Initialize(numCol/4, false, cell.minSenseVoltage, lengthRow/(numCol), clkFreq, numReadCellPerOperationNeuro);	
-
-			// for multi-bit, add numReadPulse
-			if (numReadPulse > 1) {
-				shiftAddInput.Initialize(1, adderBit, clkFreq, spikingMode, numReadPulse);
-				shiftAddInput.CalculateArea(heightArray, NULL, NONE);
-			}
-			
-		} 	
-
-		// be cautious about the arguments
-		precharger.Initialize(numCol/4, resCol, activityColWrite, numReadCellPerOperationNeuro, numWriteCellPerOperationNeuro);
-		sramWriteDriver.Initialize(numCol/4, activityColWrite, numWriteCellPerOperationNeuro);
-		
+				// be cautious about the arguments
+				precharger.Initialize(numCol/4, resCol, activityColWrite, numReadCellPerOperationNeuro, numWriteCellPerOperationNeuro);
+				sramWriteDriver.Initialize(numCol/4, activityColWrite, numWriteCellPerOperationNeuro);
+				
 		}
 
 
@@ -936,7 +941,7 @@ void SubArray::CalculateArea() {  //calculate layout area for total design
 					areaArray = heightArray * widthArray;
 					
 					// precharger and writeDriver are always needed for all different designs
-
+			
 					precharger.CalculateArea(NULL, widthArray, NONE);
 					sramWriteDriver.CalculateArea(NULL, widthArray, NONE);
 					dff.CalculateArea(heightArray, NULL, NONE);	// just for calculting load cap for adder
@@ -1007,12 +1012,13 @@ void SubArray::CalculateArea() {  //calculate layout area for total design
 					heightArray = lengthCol;
 					widthArray = lengthRow;
 					areaArray = heightArray * widthArray;
-					
+				
 					// precharger and writeDriver are always needed for all different designs
 
 					precharger.CalculateArea(NULL, widthArray, NONE);
 					sramWriteDriver.CalculateArea(NULL, widthArray, NONE);
 					dff.CalculateArea(heightArray, NULL, NONE);	// just for calculting load cap for adder
+					
 					
 					// use the TSMC layout
 
@@ -1023,6 +1029,8 @@ void SubArray::CalculateArea() {  //calculate layout area for total design
 						senseAmp.CalculateArea(NULL, widthArray, MAGIC);
 						addertree.CalculateArea(heightArray, NULL, NONE);
 						double hInv, wInv;
+
+
 
 						// buffer area
 						if (param->buffernumber>0) {
@@ -1042,6 +1050,14 @@ void SubArray::CalculateArea() {  //calculate layout area for total design
 							shiftAddInput.CalculateArea(heightArray, NULL, NONE);
 						}
 
+						/*
+						cout<< precharger.area<<endl;
+						cout<< sramWriteDriver.area<<endl;
+						cout<< heightArray<<endl;
+						cout<< senseAmp.area<<endl;
+						exit(-1);
+						*/
+
 						height = 2*precharger.height + 2*sramWriteDriver.height + 2*heightArray + 2*senseAmp.height ;
 
 						width = param->numColSubArray/2/param->parallel_weightprecision *( addertree.width  + dff.width + shiftAddInput.width ) 
@@ -1051,6 +1067,8 @@ void SubArray::CalculateArea() {  //calculate layout area for total design
 
 						area = height * width;
 
+
+						
 						usedArea = areaArray + wlDecoder.area + param->numColSubArray/param->parallel_weightprecision * (dff.area + addertree.area +  shiftAddInput.area )
 						+ 4*precharger.area + 4*sramWriteDriver.area + 4*senseAmp.area  + 2*wlSwitchMatrix.area
 						+ hInv * wInv * 4 * param->buffernumber * 2 * param->numRowSubArray;
@@ -1746,14 +1764,23 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 				double widthNorN = 1 * MIN_NMOS_SIZE * tech.featureSize;
 				double widthNorP = 1 * 2 * tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
 				
+				double on_inputcap, off_inputcap; 
+				double Cgg, Cinv_out, Cov;
+				Cov = tech.cap_draintotal * tech.effective_width;
+				
+
 				if ((tech.featureSize == 2 * 1e-9) && (param->speciallayout)) {
 					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 8.0/15.0, 22.0/15.0);	
-				} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout))
-				{
+				} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout)) {
 					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 7.0/15.0, 23.0/15.0);	
-				}
-	  				  else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
-					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput,  1.0, 4.0/9.0, 14.0/9.0 ); }	
+				} else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput,  1.0, 4.0/9.0, 14.0/9.0 ); 
+					CalculateGateCapacitance_GAA(INV, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &Cgg, &Cinv_out,  1.0, 1.0, 1.0 ); 
+					capNORInput = Cgg + Cov + Cinv_out;
+					on_inputcap = Cgg + Cov + Cinv_out;
+					off_inputcap = Cov;
+					capNOROutput = Cinv_out + Cgg*1/2 + Cov;
+				}	
 				else {
 					CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
 				}
@@ -1781,6 +1808,9 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 
 					if ((tech.featureSize <= 2* 1e-9) && (param->speciallayout)) {
 						resPullUp= 3/2 * resPullUp;
+					} else if ((tech.featureSize == 0.5* 1e-9) && (param->speciallayout)) {
+						resPullUp = CalculateOnResistance(MIN_NMOS_SIZE * tech.featureSize, NMOS, inputParameter.temperature, tech);
+
 					}
 
 					if ((tech.featureSize == 2 * 1e-9) && (param->speciallayout)) {
@@ -1788,7 +1818,7 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 					} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout)) {
 						CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 23.0/15.0, 7.0/15.0);	
 					} else if ((tech.featureSize == 0.5e-9) && param->speciallayout) {
-					CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 14.0/9.0, 4.0/9.0 ); }	
+						CalculateGateCapacitance_GAA(NAND, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, hNand, tech, &capNandInput, &capNandOutput, 1.0, 14.0/9.0, 4.0/9.0 ); }	
 					else {
 						CalculateGateCapacitance(NAND, 2, widthNandN, widthNandP, hNand, tech, &capNandInput, &capNandOutput);
 					}
@@ -1868,9 +1898,12 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 					addertree.CalculateLatency(1, (double)numRow, dff.capTgDrain);
 
 					// NOR gate delay
+					
 					double tr =  (capNOROutput+capRowforNOR)  * resPullUp ;
 					double NORreadLatency = horowitz(tr, 0, 1e20, NULL);
 					
+
+
 					if (CalculateclkFreq) {
 						readLatency += addertree.readLatency;
 						readLatency += NORreadLatency;
@@ -2504,14 +2537,31 @@ void SubArray::CalculatePower(const vector<double> &columnResistance) {
 				// NOR GATE leakage
 				double widthNorN = 1 * MIN_NMOS_SIZE * tech.featureSize;
 				double widthNorP = 1 * 2 * tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
-				leakage += CalculateGateLeakage(NOR, 2, widthNorN, widthNorP , inputParameter.temperature, tech) * numRow * numCol ;
-				
+
+
+				// NOR gate capacitance setting
+				double capNORInput, capNOROutput;
+
+				if ((tech.featureSize == 2 * 1e-9) && (param->speciallayout)) {
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 8.0/15.0, 22.0/15.0);	
+					leakage += CalculateGateLeakage(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
+				} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout))
+				{
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 7.0/15.0, 23.0/15.0);	
+					leakage += CalculateGateLeakage(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
+				} else if ((tech.featureSize == 0.5 * 1e-9) && (param->speciallayout))
+				{
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput,  1.0, 4.0/9.0, 14.0/9.0 ); 
+					leakage += CalculateGateLeakage(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
+				}
+				else {
+					CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
+					leakage += CalculateGateLeakage(NOR, 2, widthNorN, widthNorP , inputParameter.temperature, tech) * numRow * numCol ;
+				}			
+					
 				// NOR + Array leakage
 				param -> DCIM_array_leakage = leakage;
-			
-				double capNORInput, capNOROutput;
-				CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
-				
+
 				// The arguments do not matter 
 				wlSwitchMatrix.CalculatePower(1, 2*numWriteOperationPerRow*numRow*activityRowWrite, activityRowRead, activityColWrite); // activity row read includes bit serial -> check
 				wlDecoder.CalculatePower(numRow*activityRowRead, numReadPulse+1);
@@ -2613,17 +2663,48 @@ void SubArray::CalculatePower(const vector<double> &columnResistance) {
 						cell.widthSRAMCellPMOS* ((tech.featureSize <= 14*1e-9)? 2:1) * tech.featureSize, inputParameter.temperature, tech) * tech.vdd * 2 * numRow * numCol;
 
 				param->SRAM_only_leakage= leakage;
+
 				// NOR GATE leakage
 				double widthNorN = 1 * MIN_NMOS_SIZE * tech.featureSize;
 				double widthNorP = 1 * 2 * tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
-				leakage += CalculateGateLeakage(NOR, 2, widthNorN, widthNorP , inputParameter.temperature, tech) * numRow * numCol ;
+	
+				double on_inputcap, off_inputcap; 
+				double Cgg, Cinv_out, Cov;
+				Cov = tech.cap_draintotal * tech.effective_width;
 				
+
+				// NOR gate capacitance setting
+				double capNORInput, capNOROutput;
+
+				if ((tech.featureSize == 2 * 1e-9) && (param->speciallayout)) {
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 8.0/15.0, 22.0/15.0);	
+					leakage += CalculateGateLeakage(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
+				} else if ((tech.featureSize == 1 * 1e-9) && (param->speciallayout))
+				{
+					CalculateGateCapacitance_GAA(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput, 1.0, 7.0/15.0, 23.0/15.0);	
+					leakage += CalculateGateLeakage(NOR, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
+				} else if ((tech.featureSize == 0.5 * 1e-9) && (param->speciallayout))
+				{
+
+					CalculateGateCapacitance_GAA(INV, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &Cgg, &Cinv_out,  1.0, 1.0, 1.0 ); 
+					
+					on_inputcap = Cgg + Cov + Cinv_out;
+					off_inputcap = Cov;
+					capNOROutput = Cinv_out + Cgg*1/2 + Cov;
+					capNORInput = ( param->zeroweightcount * off_inputcap + (param->numColSubArray * param->parallel_weightprecision - param->zeroweightcount) * on_inputcap ) / (param->numColSubArray * param->parallel_weightprecision);
+					
+					param->zeroweightcount =0 ;
+
+					leakage += CalculateGateLeakage(INV, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
+				}
+				else {
+					CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
+					leakage += CalculateGateLeakage(NOR, 2, widthNorN, widthNorP , inputParameter.temperature, tech) * numRow * numCol ;
+				}	
+
 				// NOR + Array leakage
 				param -> DCIM_array_leakage = leakage;
-			
-				double capNORInput, capNOROutput;
-				CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
-				
+
 				// The arguments do not matter 
 				wlSwitchMatrix.CalculatePower(1, 2*numWriteOperationPerRow*numRow*activityRowWrite, activityRowRead, activityColWrite); // activity row read includes bit serial -> check
 				wlDecoder.CalculatePower(numRow*activityRowRead, numReadPulse+1);

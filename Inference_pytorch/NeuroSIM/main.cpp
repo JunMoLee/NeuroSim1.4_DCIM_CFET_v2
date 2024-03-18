@@ -557,10 +557,11 @@ int main(int argc, char * argv[]) {
     
     // debugging code
 
-    /*
+    
     fstream read;
+    string date="240316";
     // read.open("filelocation/filename",fstream::app);    
-    read.open("/home/junmo/DNN_NeuroSim_V1.4/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/overall_metrics.csv",fstream::app); 
+    read.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Systembreakdown.csv",fstream::app); 
     
     // enter the filelocation/filename where you want to store the printed values. 
 
@@ -606,10 +607,10 @@ int main(int argc, char * argv[]) {
     read<< "muxdelay" <<", "<<param->muxdelay<<", ";
     read<<endl;
 
-    */
+
 
     // caplist
-    string date="240316";
+   
     fstream read5;
     read5.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_caplist.csv",fstream::app);
     read5<<"technode"<<", "<<param->technode<<", ";

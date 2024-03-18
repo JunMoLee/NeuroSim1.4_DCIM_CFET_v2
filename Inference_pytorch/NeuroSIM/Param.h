@@ -163,6 +163,8 @@ public:
 	double unitactivity=0;
 	double averageTR=0;
 
+	// CFET 
+	double zeroweightcount_forenergy;
 
 	// 1.4+ DCIM
 	// energy breakdown extraction
