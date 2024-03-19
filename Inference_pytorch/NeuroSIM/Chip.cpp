@@ -405,7 +405,12 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 	while (globalBusWidth > param->maxGlobalBusWidth) {
 		globalBusWidth /= 2;
 	}
-	
+
+	// CFET
+	if(param->buswidthforce){
+		globalBusWidth=param->maxGlobalBusWidth;
+	}
+
 	// define bufferSize for inference operation
 	
 	// 230920 update
@@ -479,6 +484,9 @@ void ChipInitialize(InputParameter& inputParameter, Technology& tech, MemCell& c
 			param->totaltile_num = total_eq_NMT;
 			if (param->sync_data_transfer) GhTree->Initialize(row_tile_number, column_tile_number, param->globalBusDelayTolerance, globalBusWidth, param->clkFreq);
 			else GhTree->Initialize((numTileRow), (numTileCol), param->globalBusDelayTolerance, globalBusWidth, param->clkFreq);
+			
+		
+		
 		} else {
 			GhTree->Initialize((numTileRow), (numTileCol), param->globalBusDelayTolerance, globalBusWidth, param->clkFreq);
 		}
@@ -879,7 +887,8 @@ double ChipCalculatePerformance(InputParameter& inputParameter, Technology& tech
 			
 			double numBitToLoadOut = weightMatrixRow*param->numBitInput*numInVector;
 			double numBitToLoadIn = ceil(weightMatrixCol/param->numColPerSynapse)*param->numBitInput*numInVector/(netStructure[l][6]? 4:1);
-			
+
+
 			// Anni update
 			if (param->globalBusType) {
 				
@@ -905,6 +914,8 @@ double ChipCalculatePerformance(InputParameter& inputParameter, Technology& tech
 			// 230920 update
 			double chip_bufferclk = max(GhTree->critical_latency, 1.0); 
 			
+		
+
 			globalBuffer->CalculateLatency(globalBuffer->interface_width, numBitToLoadOut/globalBuffer->interface_width,
 									globalBuffer->interface_width, numBitToLoadIn/globalBuffer->interface_width);
 			
@@ -1128,6 +1139,8 @@ double ChipCalculatePerformance(InputParameter& inputParameter, Technology& tech
 		*readDynamicEnergy += globalBuffer->readDynamicEnergy + globalBuffer->writeDynamicEnergy + GhTree->readDynamicEnergy + GBus->readDynamicEnergy;
 	
 		*coreEnergyOther += globalBuffer->readDynamicEnergy + globalBuffer->writeDynamicEnergy + GhTree->readDynamicEnergy + GBus->readDynamicEnergy;
+
+
 
 		*leakage = tileLeakage;
 		// Anni update

@@ -132,17 +132,63 @@ Param::Param() {
 
 	technode = 1;					    // Technology node (nm)
 	CFET_technode=0.5;
-	
+	tolerance=1;
+	repeater_enlarge=0;
+
 	GDI_SPICE=0;
 	GDI_NeuroSim=0;
-	GDI=0;
+	GDI=1;
 	
+	levelOutput = 32;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
+	cellBit = 1;                        // precision of memory device 
+	// 1.4 update: dummy column sharing - how many senseamplfiers share one dummny columns?
+	// dummy column sharing should not be high, since it could change the column cap of the dummy column.
+	// In order for the dummy column to serve as a reference, the column caps of the dummy & main column should be matched closely
+	dumcolshared = levelOutput;
+
+	buswidthforce=1;
+
+	filename="test_031624";
+
+const int
+file=2;
+switch (file){
+	case 0: 	
+	filename = filename + "Resnet18";
+	
+	levelOutput = 128;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
+	dumcolshared = 128;
+	globalBusType = true;		
+	inputtoggle=0.33; 
+
+	break;  
+
+	case 1: 	
+	filename = filename + "Resnet34";
+	
+	globalBusType = true;		// false: X-Y Bus
+	levelOutput = 128;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
+	dumcolshared = 128;
+	inputtoggle=0.29; 
+
+	break;   
+
+	case 2:
+	filename = filename + "VGG8";
+
+	globalBusType = true;		// false: X-Y Bus
+	levelOutput = 32;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
+	dumcolshared = 32;
+	inputtoggle=0.18; 
+
+	break;   
+}
 
 const int 
-tech=13;
+tech=10;
 
-if (tech <13) CFET=0;
-else { CFET=1; GDI=1; }
+if (tech <13) { CFET=0; GDI=0;}
+else { CFET=1;}
 
 if (CFET==0) {
 	switch (tech){
@@ -158,13 +204,13 @@ if (CFET==0) {
 		case 9: technode =  5; break;
 		case 10: technode =  3; break;
 		case 11: technode =  2; break;
-		case 12: technode =  1; break;
+		case 12: technode =  1; repeater_enlarge=1; repeater_add=9; tolerance=0; break;
 
 	}
 }
 else {
 
-if (tech==13) technode =  0.5; CFET_technode=0.5;
+if (tech==13) {technode =  0.5; CFET_technode=0.5; repeater_enlarge=1; repeater_add=9 ; }
 
 }	
 	// 1.4 update: Activation implementation option added
@@ -177,7 +223,7 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 
 	parallel_weightprecision=4; // how many weight levels are input to the adder tree in one cycle
 
-	toggle_enforce=1;
+	toggle_enforce=0;
 	DCIM_energy_recalculated=1; // uses customized code for adder tree energy calculation, which considers toggling 
 	DCIM_wsparsity=0.5; // weight sparsity
 
@@ -206,7 +252,7 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 	// sizingfactor_WLdecoder needs to be adjusted to reduce SRAM WL delay
 
 	// 1.4+ DCIM: DCIM switchmatrix sizing added 
-	filename="test_031624";
+	
 
 	if (CFET == 0) {
 		switch (technode){ 
@@ -281,9 +327,9 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 			case 14:	Metal0=32; Metal1=39;   wireWidth=32;  barrierthickness=2.5e-9;  featuresize = wireWidth*1e-9; break;  
 			case 10:	Metal0=22; Metal1=32;   wireWidth=22;  barrierthickness=2.0e-9;  featuresize = wireWidth*1e-9; break;  
 			case 7:		Metal0=20; Metal1=28.5; wireWidth=20;  barrierthickness=2.0e-9;  featuresize = wireWidth*1e-9; break;  
-			case 5:		Metal0=15; Metal1=17;   wireWidth=15;  barrierthickness=2.0e-9;  featuresize = wireWidth*1e-9; break;  
-			case 3:		Metal0=12; Metal1=16;   wireWidth=12;  barrierthickness=1.5e-9;  featuresize = wireWidth*1e-9; break; 
-			case 2:		Metal0=10; Metal1=11.5; wireWidth=10;  barrierthickness=0.5e-9;  featuresize = wireWidth*1e-9; break;  
+			case 5:		Metal0=15; Metal1=17;   wireWidth=18;  barrierthickness=2.0e-9;  featuresize = wireWidth*1e-9; break;  
+			case 3:		Metal0=12; Metal1=16;   wireWidth=16;  barrierthickness=1.5e-9;  featuresize = wireWidth*1e-9; break; 
+			case 2:		Metal0=10; Metal1=11.5; wireWidth=12;  barrierthickness=0.5e-9;  featuresize = wireWidth*1e-9; break;  
 			case 1:		Metal0=8;  Metal1=10;   wireWidth=8;   barrierthickness=0.5e-9;  featuresize = wireWidth*1e-9; break; 
 
 			case -1:	break;	
@@ -298,16 +344,13 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 	}
 	
 
-	globalBusDelayTolerance = 0.1;      // to relax bus delay for global H-Tree (chip level: communication among tiles), if tolerance is 0.1, the latency will be relax to (1+0.1)*optimalLatency (trade-off with energy)
-	localBusDelayTolerance = 0.1;       // to relax bus delay for global H-Tree (tile level: communication among PEs), if tolerance is 0.1, the latency will be relax to (1+0.1)*optimalLatency (trade-off with energy)
+	globalBusDelayTolerance = 0;      // to relax bus delay for global H-Tree (chip level: communication among tiles), if tolerance is 0.1, the latency will be relax to (1+0.1)*optimalLatency (trade-off with energy)
+	localBusDelayTolerance = 0;       // to relax bus delay for global H-Tree (tile level: communication among PEs), if tolerance is 0.1, the latency will be relax to (1+0.1)*optimalLatency (trade-off with energy)
 	treeFoldedRatio = 4;                // the H-Tree is assumed to be able to folding in layout (save area)
-	maxGlobalBusWidth = 2048;           // the max buswidth allowed on chip level (just a upper_bound, the actual bus width is defined according to the auto floorplan)
+	maxGlobalBusWidth = 4096;           // the max buswidth allowed on chip level (just a upper_bound, the actual bus width is defined according to the auto floorplan)
 										// NOTE: Carefully choose this number!!!
 										// e.g. when use pipeline with high speedUpDegree, i.e. high throughput, need to increase the global bus width (interface of global buffer) --> guarantee global buffer speed
 
-	// 1.4 update
-
-	inputtoggle = 0.18; // toggling rate for the interconnect energy estimation, needs to be set based on real traces of the input bits
 
 	// Toggling rate tracking can be done by modifying the ProcessingUnit.cpp
 
@@ -316,14 +359,14 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 	// ResNet34-ImageNet: 0.29
 	// ResNet18-ImageNet: 0.33
 
-	outputtoggle = 0.5; // output bit toggling has a negligible portion of the interconnect energy. Set it to 50 % for simpliciity and generalizability for all neural network workloads.
+	outputtoggle=0.25; // output bit toggling has a negligible portion of the interconnect energy. Set it to 50 % for simpliciity and generalizability for all neural network workloads.
 
 	numRowSubArray = 256;               // # of rows in single subArray
 	numColSubArray = 256;               // # of columns in single subArray
 
 	// 230920 update
 
-	sync_data_transfer=0;
+	sync_data_transfer=1;
 
 	/*** initialize operationMode as default ***/ 
 	
@@ -373,12 +416,6 @@ if (tech==13) technode =  0.5; CFET_technode=0.5;
 	numColMuxed=numColPerSynapse;
 	}
 	
-	levelOutput = 32;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
-	cellBit = 1;                        // precision of memory device 
-	// 1.4 update: dummy column sharing - how many senseamplfiers share one dummny columns?
-	// dummy column sharing should not be high, since it could change the column cap of the dummy column.
-	// In order for the dummy column to serve as a reference, the column caps of the dummy & main column should be matched closely
-	dumcolshared = levelOutput;
 
 	/*** parameters for SRAM ***/
 	// due the scaling, suggested SRAM cell size above 22nm: 160F^2

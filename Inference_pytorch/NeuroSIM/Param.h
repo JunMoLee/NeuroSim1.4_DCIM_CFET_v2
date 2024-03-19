@@ -73,7 +73,11 @@ public:
 	double GDI_SPICE=0;
 	double GDI_NeuroSim=0;
 	double GDI=0;
-	
+	double repeater_enlarge=0;
+	double repeater_add=0;
+	double buswidthforce=0;
+	double tolerance=1;
+
 	int neuro, multifunctional, parallelWrite, parallelRead;
 	int numlut, numColMuxed, numWriteColMuxed, levelOutput, avgWeightBit, numBitInput;
 	int numRowSubArray, numColSubArray;

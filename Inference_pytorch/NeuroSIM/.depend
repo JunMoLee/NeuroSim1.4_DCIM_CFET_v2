@@ -6,6 +6,9 @@ ProcessingUnit.o: ProcessingUnit.cpp Bus.h typedef.h InputParameter.h \
  NewSwitchMatrix.h CurrentSenseAmp.h MultilevelSenseAmp.h \
  MultilevelSAEncoder.h SarADC.h LevelShifter.h AdderTree_DCIM.h \
  Adder_DCIM.h ProcessingUnit.h Param.h AdderTree.h
+WLNewDecoderDriver.o: WLNewDecoderDriver.cpp constant.h formula.h \
+ Technology.h typedef.h Param.h WLNewDecoderDriver.h FunctionUnit.h \
+ InputParameter.h MemCell.h
 SarADC.o: SarADC.cpp constant.h formula.h Technology.h typedef.h Param.h \
  SarADC.h InputParameter.h MemCell.h FunctionUnit.h
 formula.o: formula.cpp constant.h formula.h Technology.h typedef.h \
@@ -19,14 +22,11 @@ Technology.o: Technology.cpp Technology.h typedef.h
 NewSwitchMatrix.o: NewSwitchMatrix.cpp constant.h formula.h Technology.h \
  typedef.h NewSwitchMatrix.h FunctionUnit.h InputParameter.h MemCell.h \
  DFF.h Param.h
-WLNewDecoderDriver.o: WLNewDecoderDriver.cpp constant.h formula.h \
- Technology.h typedef.h Param.h WLNewDecoderDriver.h FunctionUnit.h \
- InputParameter.h MemCell.h
+DeMux.o: DeMux.cpp constant.h formula.h Technology.h typedef.h DeMux.h \
+ InputParameter.h MemCell.h FunctionUnit.h
 MaxPooling.o: MaxPooling.cpp constant.h formula.h Technology.h typedef.h \
  Param.h MaxPooling.h InputParameter.h MemCell.h FunctionUnit.h \
  Comparator.h
-DeMux.o: DeMux.cpp constant.h formula.h Technology.h typedef.h DeMux.h \
- InputParameter.h MemCell.h FunctionUnit.h
 SramNewSA.o: SramNewSA.cpp constant.h formula.h Technology.h typedef.h \
  SramNewSA.h InputParameter.h MemCell.h FunctionUnit.h
 Bus.o: Bus.cpp constant.h typedef.h formula.h Technology.h Bus.h \
@@ -52,9 +52,11 @@ Tile.o: Tile.cpp Sigmoid.h typedef.h InputParameter.h Technology.h \
  Adder_DCIM.h Param.h Tile.h
 SRAMWriteDriver.o: SRAMWriteDriver.cpp constant.h formula.h Technology.h \
  typedef.h SRAMWriteDriver.h InputParameter.h MemCell.h FunctionUnit.h
-AdderTree_DCIM.o: AdderTree_DCIM.cpp constant.h formula.h Technology.h \
- typedef.h AdderTree_DCIM.h InputParameter.h MemCell.h FunctionUnit.h \
- Adder_DCIM.h Param.h
+LevelShifter.o: LevelShifter.cpp constant.h formula.h Technology.h \
+ typedef.h Param.h LevelShifter.h FunctionUnit.h InputParameter.h \
+ MemCell.h
+VoltageSenseAmp.o: VoltageSenseAmp.cpp constant.h formula.h Technology.h \
+ typedef.h VoltageSenseAmp.h InputParameter.h MemCell.h FunctionUnit.h
 XYBus.o: XYBus.cpp constant.h typedef.h formula.h Technology.h XYBus.h \
  InputParameter.h MemCell.h FunctionUnit.h Param.h
 Sigmoid.o: Sigmoid.cpp constant.h formula.h Technology.h typedef.h \
@@ -70,6 +72,9 @@ MultilevelSenseAmp.o: MultilevelSenseAmp.cpp constant.h formula.h \
  MemCell.h FunctionUnit.h CurrentSenseAmp.h
 BitShifter.o: BitShifter.cpp constant.h formula.h Technology.h typedef.h \
  BitShifter.h InputParameter.h MemCell.h FunctionUnit.h DFF.h
+AdderTree_DCIM.o: AdderTree_DCIM.cpp constant.h formula.h Technology.h \
+ typedef.h AdderTree_DCIM.h InputParameter.h MemCell.h FunctionUnit.h \
+ Adder_DCIM.h Param.h
 RowDecoder.o: RowDecoder.cpp constant.h formula.h Technology.h typedef.h \
  Param.h RowDecoder.h InputParameter.h MemCell.h FunctionUnit.h
 CurrentSenseAmp.o: CurrentSenseAmp.cpp constant.h formula.h Technology.h \
@@ -84,21 +89,16 @@ Chip.o: Chip.cpp MaxPooling.h typedef.h InputParameter.h Technology.h \
  NewSwitchMatrix.h CurrentSenseAmp.h MultilevelSenseAmp.h \
  MultilevelSAEncoder.h SarADC.h LevelShifter.h AdderTree_DCIM.h \
  Adder_DCIM.h Tile.h Param.h Chip.h XYBus.h
-VoltageSenseAmp.o: VoltageSenseAmp.cpp constant.h formula.h Technology.h \
- typedef.h VoltageSenseAmp.h InputParameter.h MemCell.h FunctionUnit.h
-LevelShifter.o: LevelShifter.cpp constant.h formula.h Technology.h \
- typedef.h Param.h LevelShifter.h FunctionUnit.h InputParameter.h \
- MemCell.h
+FunctionUnit.o: FunctionUnit.cpp FunctionUnit.h
 ShiftAdd.o: ShiftAdd.cpp constant.h formula.h Technology.h typedef.h \
  Param.h ShiftAdd.h InputParameter.h MemCell.h FunctionUnit.h Adder.h \
  DFF.h
-Precharger.o: Precharger.cpp constant.h formula.h Technology.h typedef.h \
- Precharger.h InputParameter.h MemCell.h FunctionUnit.h
 Comparator.o: Comparator.cpp constant.h formula.h Technology.h typedef.h \
  Param.h Comparator.h InputParameter.h MemCell.h FunctionUnit.h
 DFF.o: DFF.cpp constant.h formula.h Technology.h typedef.h Param.h DFF.h \
  InputParameter.h MemCell.h FunctionUnit.h
-FunctionUnit.o: FunctionUnit.cpp FunctionUnit.h
+Precharger.o: Precharger.cpp constant.h formula.h Technology.h typedef.h \
+ Precharger.h InputParameter.h MemCell.h FunctionUnit.h
 MultilevelSAEncoder.o: MultilevelSAEncoder.cpp constant.h formula.h \
  Technology.h typedef.h Param.h MultilevelSAEncoder.h InputParameter.h \
  MemCell.h FunctionUnit.h

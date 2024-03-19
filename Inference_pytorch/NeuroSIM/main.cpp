@@ -555,46 +555,50 @@ int main(int argc, char * argv[]) {
     cout << "Total Run-time of NeuroSim: " << duration.count() << " seconds" << endl;
     cout << "------------------------------ Simulation Performance --------------------------------" <<  endl;
     
-    // debugging code
 
-    
     fstream read;
-    string date="240316";
+    string date= param->filename;
     // read.open("filelocation/filename",fstream::app);    
     read.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Systembreakdown.csv",fstream::app); 
     
     // enter the filelocation/filename where you want to store the printed values. 
+    read<<"technode"<<", "<<param->technode<<", " ;
+    read<<"operationmode"<<", "<<param->operationmode<<", ";
+    read<<"memcelltype"<<", "<<param->memcelltype<<", ";
+    read<<"accesstype"<<", "<<param->accesstype<<", ";
+    read<< "GDI yes?" <<", "<<param->GDI<<", ";
 
-    read<<param->technode<<", " ;
-    read<<param->operationmode<<", ";
-    read<<param->memcelltype<<", ";
-    read<<param->accesstype<<", ";
+    read<<"chiparea (um2)"<<", "<<chipArea*1e12<<", ";
+    read<<"chipAreaArray (um2)"<<", "<<chipAreaArray*1e12<<", ";
+    read<<"chipAreaIC (um2)"<<", "<<chipAreaIC*1e12<<", ";
+    read<<"chipAreaADC (um2)"<<", "<<chipAreaADC*1e12<<", ";
+    read<<"chipAreaAccum (um2)"<<", "<<chipAreaAccum*1e12<<", ";
+    read<<"chipAreaOther (um2)"<<", "<<chipAreaOther*1e12<<", ";
+    read<<"clkPeriod (ns)"<<", "<<clkPeriod*1e9<<", ";
+    read<<"chipReadLatency (ns) (0)"<<", "<<chipReadLatency*1e9<<", ";
+    read<<"chipReadDynamicEnergy (pJ) [0-1]"<<", "<<chipReadDynamicEnergy*1e12<<", ";
+    read<<"chipLeakageEnergy (pJ) [0-2]"<<", "<<chipLeakageEnergy*1e12<<", ";
+    read<<"chipLeakage (pJ)"<<", "<<chipLeakage*1e6<<", ";
 
-    read<<chipArea*1e12<<", "<<chipAreaArray*1e12<<", "<<chipAreaIC*1e12<<", ";
-    read<<chipAreaADC*1e12<<", "<<chipAreaAccum*1e12<<", "<<chipAreaOther*1e12<<", ";
-    read<<clkPeriod*1e9<<", ";
-    read<<chipReadLatency*1e9<<", ";
-    read<<chipReadDynamicEnergy*1e12<<", ";
-    read<<chipLeakageEnergy*1e12<<", ";
-    read<<chipLeakage*1e6<<", ";
+    read<<"chipbufferLatency (ns) (1)"<<", "<<chipbufferLatency*1e9<<", ";
+    read<<"chipbufferReadDynamicEnergy (pJ) [3]"<<", "<<chipbufferReadDynamicEnergy*1e12<<", ";
+    read<<"chipicLatency (ns)"<<", "<<chipicLatency*1e9 <<", ";
+    read<<"chipicReadDynamicEnergy (pJ) [1]"<<", "<<chipicReadDynamicEnergy*1e12 <<", ";
+    read<<"Macrototaldynamic [2] "<<", "<<param->Macrototaldynamic*1e12<<", ";
+    read<<"chipLatencyADC (ns)"<<", "<<chipLatencyADC*1e9<<", ";
+    read<<"chipLatencyAccum (ns)"<<", "<<chipLatencyAccum*1e9 <<", ";
+    read<<"chipLatencyOther (ns)"<<", "<<chipLatencyOther*1e9 <<", ";
+    read<<"chipEnergyADC (pJ) [2]"<<", "<<chipEnergyADC*1e12 <<", ";
+    read<<"chipEnergyAccum (pJ)"<<", "<<chipEnergyAccum*1e12<<", ";
+    read<<"chipEnergyOther (pJ)"<<", "<<chipEnergyOther*1e12<<", ";
 
-    read<<chipbufferLatency*1e9<<", ";
-    read<<chipbufferReadDynamicEnergy*1e12<<", ";
-    read<<chipicLatency*1e9 <<", ";
-    read<<chipicReadDynamicEnergy*1e12 <<", ";
+    read<<"TOPS/W"<<", "<<numComputation/(chipReadDynamicEnergy*1e12+chipLeakageEnergy*1e12)<<", ";
+    read<<"TOPS"<<", "<<numComputation/(chipReadLatency*1e12)<<", ";
+    read<<"FPS"<<", "<<1/(chipReadLatency) <<", ";
+    read<<"TOPS/mm2"<<", "<<numComputation/(chipReadLatency*1e12)/(chipArea*1e6) <<", ";
+    read<<"numcomputation"<<", "<<numComputation<<", ";
 
-    read<<chipLatencyADC*1e9<<", ";
-    read<<chipLatencyAccum*1e9 <<", ";
-    read<<chipLatencyOther*1e9 <<", ";
-    read<<chipEnergyADC*1e12 <<", ";
-    read<<chipEnergyAccum*1e12<<", ";
-    read<<chipEnergyOther*1e12<<", ";
 
-    read<<numComputation/(chipReadDynamicEnergy*1e12+chipLeakageEnergy*1e12)/param->zeta<<", ";
-    read<<numComputation/(chipReadLatency*1e12)<<", ";
-    read<<1/(chipReadLatency) <<", ";
-    read<<numComputation/(chipReadLatency*1e12)/(chipArea*1e6) <<", ";
-    read<<numComputation<<", ";
     read<< "param->inputtoggle"<<", "<<param->inputtoggle<<", ";
     read<< "param->numRowParallel"<<", "<<param->numRowParallel<<", ";
     read<< "onoff"<<", "<<param->resistanceOn/param->resistanceOff<<", ";
@@ -602,12 +606,42 @@ int main(int argc, char * argv[]) {
     read<< "CellBit"<<", "<<param->cellBit <<", ";
     read<< "ADCcurrentmode" <<", "<<param->currentMode<<", ";
     read<< "SubArraySize" <<", "<<param->numRowSubArray<<", ";
-    read<< "ADCdelay" <<", "<<param->ADClatency<<", ";
-    read<< "rowdelay" <<", "<<param->rowdelay<<", ";
-    read<< "muxdelay" <<", "<<param->muxdelay<<", ";
+    
+
     read<<endl;
 
-
+    fstream read2;
+    read2.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_subarraylevel.csv",fstream::app); 
+    read2<<"technode"<<", "<<param->technode<<", "<< param->toggleindex <<", ";
+    read2<<"subarrayheight"<<", "<<param->subarray_height<<", ";
+    read2<<"subarraywidth"<<", "<<param->subarray_width<<", ";
+    read2<<"subarray_area"<<", "<<param->subarray_height * param->subarray_width <<", ";
+    read2<< "addertree_area"<<", "<< param->addertree_area<<", ";
+    read2<<"addertree_width"<<", "<< param->addertree_width <<", ";
+    read2<<"wlSwitchMatrix_width"<<", "<< param->wlSwitchMatrix_width  <<", ";
+    read2<<"InputDFF_width" << ", " << param->Inputdff_width  <<", ";
+    read2<<"DFF_width" << ", " <<param->dff_width <<", ";
+    read2<<"wlDecoder_width "<<", "<<   param->wlDecoder_width  <<", ";
+    read2<<"shiftAddInput_height"<<", "<<       param->shiftAddInput_width <<", ";
+    read2<<"sramWriteDriver_height"<<", "<<     param->sramWriteDriver_height<<", ";
+    read2<<"precharger_height"<<", "<<  param->precharger_height <<", ";
+    read2<<"senseAmp_height"<<", "<<        param->senseAmp_height  <<", ";
+    read2<<"addertree_delay"<<", "<<        param->addertree_delay   <<", ";
+    read2<<"precharge_delay"<<", "<<param->precharge_delay<<", ";
+    read2<<"col_delay"<<", "<<param->col_delay<<", ";
+    read2<<"ADC_delay"<<", "<<param->ADC_delay<<", ";
+    read2<<"multisense_delay"<<", "<<param->multisense_delay<<", ";
+    read2<<"WL_delay"<<", "<<param->WL_delay<<", ";
+    read2<<"encoder_delay"<<", "<<param->multiencoder_delay<<", ";
+    read2<<"mux_delay"<<", "<<param->mux_delay<<", ";
+    read2<<"NOR_delay"<<", "<<param->NOR_delay<<", ";
+    read2<<"row_delay"<<", "<<param->row_delay<<", ";
+    read2<<"mux_res"<<", "<<param->mux_res<<", ";
+    read2<<"capcell_SRAM"<<", "<<param->capcell_SRAM<<", ";
+    read2<<"capcell_row_SRAM"<<", "<<param->capcell_row_SRAM<<", ";
+    read2<<"rescell_SRAM"<<", "<<param->rescell_SRAM<<", ";
+    
+    read2<<endl;
 
     // caplist
    
@@ -629,12 +663,13 @@ int main(int argc, char * argv[]) {
     read4.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Macrobreakdown.csv",fstream::app);
     
     read4<<"technode"<<", "<<param->technode<<", "<<"toggleindex"<<", "<<param->toggleindex<<", ";
+    read4<< "GDI yes?" <<", "<<param->GDI<<", ";
     read4<<"mem cell type"<< ", "<< param->memcelltype<<", ";
     read4<<"buffernumber"<< ", "<< param->buffernumber<<", ";
     read4<<"toggle index"<< ", "<< param->toggleindex<<", ";
     read4<< "Totalsubarray operations"<<", "<<param->totalsubarrayoperations<< ", ";
-    read4<< "Average macro dynamic energy"<<", "<<param->Macrototaldynamic*4/param->totalsubarrayoperations<< ", ";
-    read4<< "1 Macro delay"<<", "<<param->Macrototallatency<< ", ";
+    read4<< "Average macro dynamic energy [0]"<<", "<<param->Macrototaldynamic*4/param->totalsubarrayoperations<< ", ";
+    read4<< "1 Macro delay (0)"<<", "<<param->Macrototallatency<< ", ";
     read4<< "1 Macro area (mm^2)"<<", "<<( param->subarray_height *param->subarray_width) * pow(10,6)<< ", ";
     read4<< "TOPS"<<", "<<2*256*64/ param->Macrototallatency*1/pow(10,12) << ", ";
     read4<< "TOPS/W"<<", "<<TOPS_W << ", ";
@@ -654,27 +689,27 @@ int main(int argc, char * argv[]) {
     read4<<"Bus_leakage"<<", "<<param-> busleakage<< ", ";
         
     
-    read4<<"readDynamicEnergyBuffer"<<", "<<param->macro_readDynamicEnergyBuffer/param->totalsubarrayoperations<<", ";
-    read4<<"readDynamicEnergyShiftAdd"<<", "<<param->macro_readDynamicEnergyShiftAdd/param->totalsubarrayoperations << ", ";
+    read4<<"readDynamicEnergyBuffer [1]"<<", "<<param->macro_readDynamicEnergyBuffer/param->totalsubarrayoperations<<", ";
+    read4<<"readDynamicEnergyShiftAdd [2]"<<", "<<param->macro_readDynamicEnergyShiftAdd/param->totalsubarrayoperations << ", ";
     read4<<"readDynamicEnergyAccum"<<", "<<param->macro_readDynamicEnergyAccum/param->totalsubarrayoperations << ", ";
-    read4<<"readDynamicEnergySwitchmatrix"<<", "<<param->macro_readDynamicSwitchmatrix/param->totalsubarrayoperations << ", ";
-    read4<<"readDynamicEnergyAdder"<<", "<<param->macro_readDynamicEnergyAdder/param->totalsubarrayoperations << ", ";
-    read4<<"readDynamicEnergyInterconnect"<<", "<<param->macro_readDynamicInterconnect/param->totalsubarrayoperations << ", ";
-    read4<<"readDynamicEnergyADC"<<", "<<param->macro_readDynamicADC/param->totalsubarrayoperations << ", ";
+    read4<<"readDynamicEnergySwitchmatrix [3]"<<", "<<param->macro_readDynamicSwitchmatrix/param->totalsubarrayoperations << ", ";
+    read4<<"readDynamicEnergyAdder [4]"<<", "<<param->macro_readDynamicEnergyAdder/param->totalsubarrayoperations << ", ";
+    read4<<"readDynamicEnergyInterconnect [5]"<<", "<<param->macro_readDynamicInterconnect/param->totalsubarrayoperations << ", ";
+    read4<<"readDynamicEnergyADC [6]"<<", "<<param->macro_readDynamicADC/param->totalsubarrayoperations << ", ";
     read4<<"readDynamicEnergyDFFinShiftAdd"<<", "<<param->macro_readDynamicDFFinShiftAdd/param->totalsubarrayoperations << ", ";
 
-    read4<<"NOR_delay"<<", "<<param -> NOR_delay << ", ";
-    read4<<"addertree_delay"<<", "<<param -> addertree_delay << ", ";
+    read4<<"NOR_delay (1) "<<", "<<param -> NOR_delay << ", ";
+    read4<<"addertree_delay (2) "<<", "<<param -> addertree_delay << ", ";
     read4<<"addedbufferlatency"<<", "<<param -> addedbufferlatency << ", ";
     read4<<"encoder_delay"<<", "<<param->multiencoder_delay<<", ";
-    read4<<"WL_delay"<<", "<<param->WL_delay<<", ";
+    read4<<"WL_delay (3)"<<", "<<param->WL_delay<<", ";
     read4<<"mux_delay"<<", "<<param->mux_delay<<", ";
     read4<<"row_delay"<<", "<<param->row_delay<<", ";
-    read4<<"precharge_delay"<<", "<<param->precharge_delay<<", ";
+    read4<<"precharge_delay (4)"<<", "<<param->precharge_delay<<", ";
     read4<<"col_delay"<<", "<<param->col_delay<<", ";
     read4<<"ADC_delay"<<", "<<param->ADC_delay<<", ";
-    read4<<"multisense_delay"<<", "<<param->multisense_delay<<", ";
-    read4<<"clock_period"<< ", "<<clkPeriod<<", ";
+    read4<<"multisense_delay (5)"<<", "<<param->multisense_delay<<", ";
+    read4<<"clock_period (6)"<< ", "<<clkPeriod<<", ";
 
     read4<< "param->capNORInput"<<", "<<param-> capNORInput<< ", ";
     read4<< "param->capNOROutput"<<", "<<param-> capNOROutput<< ", ";

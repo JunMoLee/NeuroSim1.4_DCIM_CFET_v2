@@ -73,11 +73,18 @@ void HTree::Initialize(int _numRow, int _numCol, double _delaytolerance, double 
 	widthMinInvP = tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
 	CalculateGateArea(INV, 1, widthMinInvN, widthMinInvP, tech.featureSize * MAX_TRANSISTOR_HEIGHT, tech, &hMinInv, &wMinInv);
 	CalculateGateCapacitance(INV, 1, widthMinInvN, widthMinInvP, hMinInv, tech, &capMinInvInput, &capMinInvOutput);
+
+
+
+
 	// 1.4 update: change the formula
 	double resOnRep = (CalculateOnResistance(widthMinInvN, NMOS, inputParameter.temperature, tech) + CalculateOnResistance(widthMinInvP, PMOS, inputParameter.temperature, tech))/2;
 	// optimal repeater design to achieve highest speed
 	repeaterSize = floor((double)sqrt( (double) resOnRep*unitLengthWireCap/capMinInvInput/unitLengthWireResistance));
 	minDist = sqrt(2*resOnRep*(capMinInvOutput+capMinInvInput)/(unitLengthWireResistance*unitLengthWireCap));
+
+
+
 	CalculateGateArea(INV, 1, MIN_NMOS_SIZE * tech.featureSize * repeaterSize, tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize * repeaterSize, tech.featureSize * MAX_TRANSISTOR_HEIGHT, tech, &hRep, &wRep);
 	CalculateGateCapacitance(INV, 1, MIN_NMOS_SIZE * tech.featureSize * repeaterSize, tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize * repeaterSize, hRep, tech, &capRepInput, &capRepOutput);
 	// 1.4 update: change the formula
@@ -85,7 +92,7 @@ void HTree::Initialize(int _numRow, int _numCol, double _delaytolerance, double 
 	double minUnitLengthDelay = 0.7*(resOnRep*(capRepInput+capRepOutput+unitLengthWireCap*minDist)+0.54*unitLengthWireResistance*minDist*unitLengthWireCap*minDist+unitLengthWireResistance*minDist*capRepInput)/minDist;
 	double maxUnitLengthEnergy = (capRepInput+capRepOutput+unitLengthWireCap*minDist)*tech.vdd*tech.vdd/minDist;
 	
-	if (delaytolerance) {   // tradeoff: increase delay to decrease energy
+	if (param->tolerance && delaytolerance) {   // tradeoff: increase delay to decrease energy
 		double delay = 0;
 		double energy = 100;
 		while(delay<minUnitLengthDelay*(1+delaytolerance)) {
@@ -99,10 +106,15 @@ void HTree::Initialize(int _numRow, int _numCol, double _delaytolerance, double 
 			energy = (capRepInput+capRepOutput+unitLengthWireCap*minDist)*tech.vdd*tech.vdd/minDist;
 		}
 	}
-	
+
+	if (param->repeater_enlarge) repeaterSize = param->repeater_add + repeaterSize;
+
+
+
 	widthInvN = MAX(1,repeaterSize) * MIN_NMOS_SIZE * tech.featureSize;
 	widthInvP = MAX(1,repeaterSize) * tech.pnSizeRatio * MIN_NMOS_SIZE * tech.featureSize;
 	
+
 	// 230920 update
 	numRow = pow(2, (numStage-1)/2);
 	numCol = pow(2, (numStage-1)/2);
@@ -175,7 +187,7 @@ void HTree::CalculateArea(double unitHeight, double unitWidth, double foldedrati
 		// Capacitance
 		// INV
 		CalculateGateCapacitance(INV, 1, widthInvN, widthInvP, hInv, tech, &capInvInput, &capInvOutput);
-		
+
 	}
 }
 
@@ -220,6 +232,22 @@ void HTree::CalculateLatency(int x_init, int y_init, int x_end, int y_end, doubl
 			}
 			/*** main bus ***/
 			readLatency += min(numCol-x_center, x_center)*unitWidth*unitLatencyRep;
+		
+		/*
+		cout<<resOnRep <<endl;
+		cout<<capInvInput <<endl;
+		cout<<capInvOutput <<endl;
+		cout<<unitLengthWireCap<<endl;
+		cout<<minDist<<endl;
+		cout<<unitLengthWireResistance<<endl;
+		cout<< unitLatencyRep <<endl;
+		cout<< unitLatencyWire <<endl;
+		cout<< unitWidth<<endl;
+
+		exit(-1);	
+		*/
+		
+		
 		} else {       // leaf-leaf communicate
 			/*** firstly need to find the zone of two units ***/
 			/*** in each level, the units are defined as 4 zones, which used to decide the travel distance
@@ -319,6 +347,7 @@ void HTree::CalculatePower(int x_init, int y_init, int x_end, int y_end, double 
 		// 1.4 update -updated interconnect energy
 		unitLengthEnergyRep = (capInvInput+capInvOutput+unitLengthWireCap*minDist)*tech.vdd*tech.vdd/minDist * 0.5;
 		unitLengthEnergyWire = (unitLengthWireCap*minDist)*tech.vdd*tech.vdd/minDist*0.5;
+
 
 		double wireLengthV = unitHeight*pow(2, (numStage-1)/2)/2;   // first vertical stage
 		double wireLengthH = unitWidth*pow(2, (numStage-1)/2)/2;    // first horizontal stage (despite of main bus)
