@@ -185,7 +185,7 @@ switch (file){
 }
 
 const int 
-tech=10;
+tech=13;
 
 if (tech <13) { CFET=0; GDI=0;}
 else { CFET=1;}

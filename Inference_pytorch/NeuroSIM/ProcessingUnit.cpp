@@ -371,9 +371,10 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
                             if ((param->realtime_toggle ==1)&& (param->memcelltype == 4)){
                                 param->weightcount += input.size() * subArrayMemory[0].size() ;
                                 
-                                if (param->sparsitycalc==1) {
+                                if (param->sparsitycalc==1 && (!CalculateclkFreq)) {
                                 	for (int ii=0; ii<input.size(); ii++){
 										for (int jj=0; jj<subArrayMemory[ii].size(); jj++){
+												
 											if ( subArrayMemory[ii][jj] == param->minConductance ) param->zeroweightcount ++;
                                			 }
                                 	}
@@ -417,9 +418,10 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
                                     double weightcount = 0;
                                     param->weightcount += input.size() * subArrayMemory[0].size() ;
                                     
-                                    if (param->sparsitycalc==1) {
+                                    if (param->sparsitycalc==1 && (!CalculateclkFreq)) {
 										for (int ii=0; ii<input.size(); ii++){
 											for (int jj=0; jj<subArrayMemory[ii].size(); jj++){
+											
 												if ( subArrayMemory[ii][jj] == param->minConductance ) param->zeroweightcount ++;
                                     		}
                                     	}
@@ -486,7 +488,9 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 							}							
 							
 							if(!CalculateclkFreq){
+								
 								subArray->CalculatePower(columnResistance);
+								param->zeroweightcount=0;
 								*readDynamicEnergy += subArray->readDynamicEnergy;
 								subArrayLeakage = subArray->leakage;
 								// Anni update: 
@@ -579,9 +583,10 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
                         double togglecount = 0; 
                                 param->weightcount += input.size() * subArrayMemory[0].size() ;
                                 
-                                if (param->sparsitycalc==1) {
+                                if (param->sparsitycalc==1 && (!CalculateclkFreq)) {
 									for (int ii=0; ii<input.size(); ii++){
 										for (int jj=0; jj<subArrayMemory[ii].size(); jj++){
+												
 											if ( subArrayMemory[ii][jj] == param->minConductance ) param->zeroweightcount ++;
 										}
 									}
@@ -620,9 +625,10 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 
                                 param->weightcount += input.size() * subArrayMemory[0].size() ;
                                 
-                                if (param->sparsitycalc==1) {
+                                if (param->sparsitycalc==1 && (!CalculateclkFreq)) {
 									for (int ii=0; ii<input.size(); ii++){
 										for (int jj=0; jj<subArrayMemory[ii].size(); jj++){
+												
 											if ( subArrayMemory[ii][jj] == param->minConductance ) param->zeroweightcount ++;
 										}
 									}
@@ -686,7 +692,9 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 				}
 				
 				if(!CalculateclkFreq){
+					
 					subArray->CalculatePower(columnResistance);
+					param->zeroweightcount=0;
 					*readDynamicEnergy += subArray->readDynamicEnergy;
 					subArrayLeakage = subArray->leakage;
 					// Anni update: 
@@ -764,9 +772,11 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
                                 double togglecount = 0;
                                 param->weightcount += input.size() * subArrayMemory[0].size() ;
                                 
-                                if (param->sparsitycalc==1) {
+                                if (param->sparsitycalc==1 && (!CalculateclkFreq)) {
 									for (int ii=0; ii<input.size(); ii++){
 										for (int jj=0; jj<subArrayMemory[ii].size(); jj++){
+										
+											
 											if ( subArrayMemory[ii][jj] == param->minConductance ) param->zeroweightcount ++;
 										}
 									}
@@ -803,9 +813,10 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 
                                 param->weightcount += input.size() * subArrayMemory[0].size() ;
                                 
-                                if (param->sparsitycalc==1) {
+                                if (param->sparsitycalc==1 && (!CalculateclkFreq)) {
 									for (int ii=0; ii<input.size(); ii++){
 										for (int jj=0; jj<subArrayMemory[ii].size(); jj++){
+												
 											if ( subArrayMemory[ii][jj] == param->minConductance ) param->zeroweightcount ++;
 										}
 									}
@@ -870,7 +881,10 @@ double ProcessingUnitCalculatePerformance(SubArray *subArray, const vector<vecto
 						}
 						
 						if(!CalculateclkFreq){
+							
 							subArray->CalculatePower(columnResistance);
+							param->zeroweightcount=0;
+
 							*readDynamicEnergy += subArray->readDynamicEnergy;
 							subArrayLeakage = subArray->leakage;
 							// Anni update: 

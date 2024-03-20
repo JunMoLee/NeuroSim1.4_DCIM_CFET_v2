@@ -1781,7 +1781,7 @@ void SubArray::CalculateLatency(double columnRes, const vector<double> &columnRe
 					capNORInput = Cgg + Cov + Cinv_out;
 					on_inputcap = Cgg + Cov + Cinv_out;
 					off_inputcap = Cov;
-					capNOROutput = Cinv_out + Cgg*1/2 + Cov;
+					capNOROutput = Cinv_out; // + Cgg*1/2 + Cov; // output cap for delay calculation
 				}	
 				else {
 					CalculateGateCapacitance(NOR, 2, widthNorN, widthNorP, tech.featureSize*MAX_TRANSISTOR_HEIGHT, tech, &capNORInput, &capNOROutput);
@@ -2693,10 +2693,8 @@ void SubArray::CalculatePower(const vector<double> &columnResistance) {
 					on_inputcap = Cgg + Cov + Cinv_out;
 					off_inputcap = Cov;
 					capNOROutput = Cinv_out + Cgg*1/2 + Cov;
-					capNORInput = ( param->zeroweightcount * off_inputcap + (param->numColSubArray * param->parallel_weightprecision - param->zeroweightcount) * on_inputcap ) / (param->numColSubArray * param->parallel_weightprecision);
-					
-					param->zeroweightcount =0 ;
-
+					capNORInput = ( param->zeroweightcount * off_inputcap + (param->numColSubArray * param->numColSubArray - param->zeroweightcount) * on_inputcap ) / (param->numColSubArray * param->numColSubArray);
+	
 					leakage += CalculateGateLeakage(INV, 2, MIN_NMOS_SIZE * tech.featureSize, MIN_NMOS_SIZE * tech.featureSize , inputParameter.temperature, tech) * numRow * numCol ;
 				}
 				else {
