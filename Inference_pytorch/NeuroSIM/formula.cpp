@@ -1568,6 +1568,8 @@ double CalculatePassGateArea(	// Calculate layout area, height and width of pass
         *height = heightRegionP + heightRegionN + modified_MIN_GAP_BET_P_AND_N_DIFFS * tech.featureSize
                   + outer_height_region_advanced * tech.featureSize;
 
+        if ( tech.featureSize == 0.5 * 1e-9) *height = ( heightRegionP + heightRegionN ) / 2 + modified_MIN_GAP_BET_P_AND_N_DIFFS * tech.featureSize + outer_height_region_advanced * tech.featureSize;
+ 
     }
     return (*width)*(*height);
 }

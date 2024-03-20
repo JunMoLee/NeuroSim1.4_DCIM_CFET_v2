@@ -91,8 +91,8 @@
 #define OUTER_HEIGHT_REGION_2nm 22.0 
 #define MIN_GAP_BET_P_AND_N_DIFFS_1nm 15.0  // IRDS 2022
 #define OUTER_HEIGHT_REGION_1nm 40.0 
-#define MIN_GAP_BET_P_AND_N_DIFFS_05nm 20.0  // IRDS 2022
-#define OUTER_HEIGHT_REGION_05nm 100.0 
+#define MIN_GAP_BET_P_AND_N_DIFFS_05nm 0  // IRDS 2022
+#define OUTER_HEIGHT_REGION_05nm 132.0 
 
 
 #define POLY_WIDTH                     1.0

@@ -130,13 +130,13 @@ Param::Param() {
 	temp = 300;                         // Temperature (K)
 
 
-	technode = 1;					    // Technology node (nm)
+
 	CFET_technode=0.5;
 	tolerance=1;
 	repeater_enlarge=0;
 
 	GDI_SPICE=0;
-	GDI_NeuroSim=0;
+	GDI_NeuroSim=0; 
 	GDI=1;
 	
 	levelOutput = 32;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
@@ -308,7 +308,7 @@ if (tech==13) {technode =  0.5; CFET_technode=0.5; repeater_enlarge=1; repeater_
 	} else {
 		// CFET
 		if (CFET_technode == 0.5) {
-				sizingfactor_MUX=30;  switchmatrixsizeratio=0.1; buffernumber=3; buffersizeratio=3; 
+				sizingfactor_MUX=30;  switchmatrixsizeratio=0.1; 
 				switchmatrixsizeratio_DCIM= 0.024; buffernumber =7; buffersizeratio=10;
 			}
 
