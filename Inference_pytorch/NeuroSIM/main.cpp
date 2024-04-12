@@ -559,8 +559,8 @@ int main(int argc, char * argv[]) {
     fstream read;
     string date= param->filename;
     // read.open("filelocation/filename",fstream::app);    
-    read.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Systembreakdown.csv",fstream::app); 
-    
+    read.open("/usr/scratch2/Minji/Neurosim/NeuroSim1.4_DCIM_CFET_v2/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Systembreakdown.csv",fstream::app); 
+              
     // enter the filelocation/filename where you want to store the printed values. 
     read<<"technode"<<", "<<param->technode<<", " ;
     read<<"operationmode"<<", "<<param->operationmode<<", ";
@@ -611,7 +611,7 @@ int main(int argc, char * argv[]) {
     read<<endl;
 
     fstream read2;
-    read2.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_subarraylevel.csv",fstream::app); 
+    read2.open("/usr/scratch2/Minji/Neurosim/NeuroSim1.4_DCIM_CFET_v2/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_subarraylevel.csv",fstream::app); 
     read2<<"technode"<<", "<<param->technode<<", "<< param->toggleindex <<", ";
     read2<<"subarrayheight"<<", "<<param->subarray_height<<", ";
     read2<<"subarraywidth"<<", "<<param->subarray_width<<", ";
@@ -646,7 +646,7 @@ int main(int argc, char * argv[]) {
     // caplist
    
     fstream read5;
-    read5.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_caplist.csv",fstream::app);
+    read5.open("/usr/scratch2/Minji/Neurosim/NeuroSim1.4_DCIM_CFET_v2/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_caplist.csv",fstream::app);
     read5<<"technode"<<", "<<param->technode<<", ";
     read5<<param->adderinputcap <<", ";
     read5<<param->adderoutputcap <<", ";
@@ -660,7 +660,7 @@ int main(int argc, char * argv[]) {
     double TOPS_W= 2*256*64/( param->Macrototaldynamic*4/param->totalsubarrayoperations)*1/pow(10,12) ;
     double TOPS_mm= 2*256*64/ param->Macrototallatency/( param->subarray_height *param->subarray_width) /pow(10,6)/pow(10,12);
 
-    read4.open("/nethome/jlee4034/NeuroSim1.4_DCIM_CFET/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Macrobreakdown.csv",fstream::app);
+    read4.open("/usr/scratch2/Minji/Neurosim/NeuroSim1.4_DCIM_CFET_v2/Inference_pytorch/NeuroSIM/Data_TechnologyUpdate/"+date+"_Macrobreakdown.csv",fstream::app);
     
     read4<<"technode"<<", "<<param->technode<<", "<<"toggleindex"<<", "<<param->toggleindex<<", ";
     read4<< "GDI yes?" <<", "<<param->GDI<<", ";

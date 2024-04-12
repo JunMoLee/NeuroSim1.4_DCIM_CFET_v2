@@ -217,7 +217,7 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 			
 
 		} else {
-			double DCIM_CPP, DCIM_CH, DCIM_FP;
+			double DCIM_CPP, DCIM_CH, DCIM_FP, DCIM_MP;
 
 			if (tech.featureSize >= 22 * 1e-9) {
 				DCIM_CPP = MIN_GAP_BET_GATE_POLY + POLY_WIDTH ;
@@ -247,15 +247,20 @@ void SubArray::Initialize(int _numRow, int _numCol, double _unitWireRes){  //ini
 				DCIM_CPP = CPP_05nm;
 				DCIM_CH = MAX_TRANSISTOR_HEIGHT_05nm;
 				DCIM_FP = tech.PitchFin;
+				DCIM_MP = M2_PITCH_05nm; 
 			} 
 
-			param->finalCellWidth = DCIM_FP* 8/(tech.featureSize);
-			param->finalCellHeight = 2*DCIM_CPP;
-
+			//param->finalCellWidth = DCIM_FP* 8/(tech.featureSize);
+			//param->finalCellHeight = 2*DCIM_CPP;
 			
-			lengthRow = (double)numCol * DCIM_FP* 8; // the layout is based on TSMC 22 nm DCIM cell @ ISSCC 2021
-			lengthCol = (double)numRow * 2*DCIM_CPP * tech.featureSize;
-		
+			//lengthRow = (double)numCol * DCIM_FP* 8; 
+			//lengthCol = (double)numRow * 2*DCIM_CPP * tech.featureSize;
+
+			param->finalCellWidth = DCIM_MP * 7.5;
+			param->finalCellHeight = 2 * DCIM_CPP;
+
+			lengthRow = (double)numCol * 7.5 * DCIM_MP * tech.featureSize; 
+			lengthCol = (double)numRow * 2 * DCIM_CPP * tech.featureSize;		
 			
 		}
 

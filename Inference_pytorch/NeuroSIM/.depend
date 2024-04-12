@@ -13,6 +13,8 @@ SarADC.o: SarADC.cpp constant.h formula.h Technology.h typedef.h Param.h \
  SarADC.h InputParameter.h MemCell.h FunctionUnit.h
 formula.o: formula.cpp constant.h formula.h Technology.h typedef.h \
  Param.h
+DFF.o: DFF.cpp constant.h formula.h Technology.h typedef.h Param.h DFF.h \
+ InputParameter.h MemCell.h FunctionUnit.h
 Mux.o: Mux.cpp constant.h formula.h Technology.h typedef.h Mux.h \
  InputParameter.h MemCell.h FunctionUnit.h
 SwitchMatrix.o: SwitchMatrix.cpp constant.h formula.h Technology.h \
@@ -24,11 +26,14 @@ NewSwitchMatrix.o: NewSwitchMatrix.cpp constant.h formula.h Technology.h \
  DFF.h Param.h
 DeMux.o: DeMux.cpp constant.h formula.h Technology.h typedef.h DeMux.h \
  InputParameter.h MemCell.h FunctionUnit.h
-MaxPooling.o: MaxPooling.cpp constant.h formula.h Technology.h typedef.h \
- Param.h MaxPooling.h InputParameter.h MemCell.h FunctionUnit.h \
- Comparator.h
+Sigmoid.o: Sigmoid.cpp constant.h formula.h Technology.h typedef.h \
+ Param.h Sigmoid.h InputParameter.h MemCell.h FunctionUnit.h Adder.h \
+ DFF.h RowDecoder.h Mux.h DecoderDriver.h VoltageSenseAmp.h SenseAmp.h \
+ Precharger.h SRAMWriteDriver.h
 SramNewSA.o: SramNewSA.cpp constant.h formula.h Technology.h typedef.h \
  SramNewSA.h InputParameter.h MemCell.h FunctionUnit.h
+RowDecoder.o: RowDecoder.cpp constant.h formula.h Technology.h typedef.h \
+ Param.h RowDecoder.h InputParameter.h MemCell.h FunctionUnit.h
 Bus.o: Bus.cpp constant.h typedef.h formula.h Technology.h Bus.h \
  InputParameter.h MemCell.h FunctionUnit.h Param.h
 NewMux.o: NewMux.cpp constant.h formula.h Technology.h typedef.h NewMux.h \
@@ -56,10 +61,6 @@ VoltageSenseAmp.o: VoltageSenseAmp.cpp constant.h formula.h Technology.h \
  typedef.h VoltageSenseAmp.h InputParameter.h MemCell.h FunctionUnit.h
 XYBus.o: XYBus.cpp constant.h typedef.h formula.h Technology.h XYBus.h \
  InputParameter.h MemCell.h FunctionUnit.h Param.h
-Sigmoid.o: Sigmoid.cpp constant.h formula.h Technology.h typedef.h \
- Param.h Sigmoid.h InputParameter.h MemCell.h FunctionUnit.h Adder.h \
- DFF.h RowDecoder.h Mux.h DecoderDriver.h VoltageSenseAmp.h SenseAmp.h \
- Precharger.h SRAMWriteDriver.h
 AdderTree.o: AdderTree.cpp constant.h formula.h Technology.h typedef.h \
  Param.h AdderTree.h InputParameter.h MemCell.h FunctionUnit.h Adder.h
 HTree.o: HTree.cpp constant.h typedef.h formula.h Technology.h HTree.h \
@@ -79,8 +80,6 @@ BitShifter.o: BitShifter.cpp constant.h formula.h Technology.h typedef.h \
 AdderTree_DCIM.o: AdderTree_DCIM.cpp constant.h formula.h Technology.h \
  typedef.h AdderTree_DCIM.h InputParameter.h MemCell.h FunctionUnit.h \
  Adder_DCIM.h Param.h
-RowDecoder.o: RowDecoder.cpp constant.h formula.h Technology.h typedef.h \
- Param.h RowDecoder.h InputParameter.h MemCell.h FunctionUnit.h
 CurrentSenseAmp.o: CurrentSenseAmp.cpp constant.h formula.h Technology.h \
  typedef.h Param.h CurrentSenseAmp.h FunctionUnit.h InputParameter.h \
  MemCell.h
@@ -102,23 +101,24 @@ ShiftAdd.o: ShiftAdd.cpp constant.h formula.h Technology.h typedef.h \
  DFF.h
 Comparator.o: Comparator.cpp constant.h formula.h Technology.h typedef.h \
  Param.h Comparator.h InputParameter.h MemCell.h FunctionUnit.h
-DFF.o: DFF.cpp constant.h formula.h Technology.h typedef.h Param.h DFF.h \
- InputParameter.h MemCell.h FunctionUnit.h
-Precharger.o: Precharger.cpp constant.h formula.h Technology.h typedef.h \
- Precharger.h InputParameter.h MemCell.h FunctionUnit.h
 MultilevelSAEncoder.o: MultilevelSAEncoder.cpp constant.h formula.h \
  Technology.h typedef.h Param.h MultilevelSAEncoder.h InputParameter.h \
  MemCell.h FunctionUnit.h
-DecoderDriver.o: DecoderDriver.cpp constant.h formula.h Technology.h \
- typedef.h DecoderDriver.h InputParameter.h MemCell.h FunctionUnit.h
+Precharger.o: Precharger.cpp constant.h formula.h Technology.h typedef.h \
+ Precharger.h InputParameter.h MemCell.h FunctionUnit.h
 Adder_DCIM.o: Adder_DCIM.cpp constant.h formula.h Technology.h typedef.h \
  Param.h Adder_DCIM.h InputParameter.h MemCell.h FunctionUnit.h
+DecoderDriver.o: DecoderDriver.cpp constant.h formula.h Technology.h \
+ typedef.h DecoderDriver.h InputParameter.h MemCell.h FunctionUnit.h
 SenseAmp.o: SenseAmp.cpp constant.h formula.h Technology.h typedef.h \
  SenseAmp.h InputParameter.h MemCell.h FunctionUnit.h
 Adder.o: Adder.cpp constant.h formula.h Technology.h typedef.h Param.h \
  Adder.h InputParameter.h MemCell.h FunctionUnit.h
 WLDecoderOutput.o: WLDecoderOutput.cpp constant.h formula.h Technology.h \
  typedef.h WLDecoderOutput.h InputParameter.h MemCell.h FunctionUnit.h
+MaxPooling.o: MaxPooling.cpp constant.h formula.h Technology.h typedef.h \
+ Param.h MaxPooling.h InputParameter.h MemCell.h FunctionUnit.h \
+ Comparator.h
 ReadCircuit.o: ReadCircuit.cpp constant.h formula.h Technology.h \
  typedef.h ReadCircuit.h InputParameter.h MemCell.h FunctionUnit.h
 Param.o: Param.cpp Param.h constant.h

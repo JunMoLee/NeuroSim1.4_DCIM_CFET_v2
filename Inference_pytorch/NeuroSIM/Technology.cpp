@@ -54,13 +54,24 @@ void Technology::Initialize(double _featureSizeInNano, DeviceRoadmap _deviceRoad
 
 	// 1.4 update : capacitance/oncurrent values for 14 nm and beyond (easy look-up purpose) - updated
 
-	double caplist [8] = {103.816,97.549,100.497,81.859,72.572, 79.74, 66.94,56.6}; // 69.369
+	//TCAD ver.1
+/*	double caplist [8] = {103.816,97.549,100.497,81.859,72.572, 79.74, 66.94,56.6}; // 69.369
 	double currentlist [8] = {595.045, 599.237, 562.048, 578.494, 641.463, 526.868, 460.979,515}; //  556.448
 	double currentlist_off [8] = {0.0001,0.000127, 0.000147, 0.000138, 0.000158, 0.0000733, 0.000169,0.0000536}; //0.000569
 	double eff_res_mul [8] = {2.09, 2.09, 2.05, 2.10, 2.14, 1.98, 2.05,2.11};
 	double gm [8] = {1415.34, 1803.50, 1785.37, 1820.90, 2018.04, 1968.85, 2401.75,3328.75};
 	double vth_list [8] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,0.1}; // dummy values, since we don't need them
 	double cap_draintotallist [8] = {2.499e-17, 2.668e-17, 2.224e-17, 2.076e-17, 1.791e-17, 1.543e-17, 1.409e-17,1.63E-17};
+*/
+	//TCAD ver.2
+	double caplist [8] = {103.816,97.549,100.497,81.859,72.572, 79.74, 66.94, 50.4}; // 69.369
+	double currentlist [8] = {595.045, 599.237, 562.048, 578.494, 641.463, 526.868, 460.979, 584.4}; //  556.448
+	double currentlist_off [8] = {0.0001,0.000127, 0.000147, 0.000138, 0.000158, 0.0000733, 0.000169, 0.00011}; //0.000569
+	double eff_res_mul [8] = {2.09, 2.09, 2.05, 2.10, 2.14, 1.98, 2.05, 2.11};
+	double gm [8] = {1415.34, 1803.50, 1785.37, 1820.90, 2018.04, 1968.85, 2401.75, 3378.75};
+	double vth_list [8] = {0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1}; // dummy values, since we don't need them
+	double cap_draintotallist [8] = {2.499e-17, 2.668e-17, 2.224e-17, 2.076e-17, 1.791e-17, 1.543e-17, 1.409e-17, 1.82E-17};
+
 
 	// test 
 	featureSizeInNano = _featureSizeInNano;

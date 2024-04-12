@@ -138,6 +138,7 @@ Param::Param() {
 	GDI_SPICE=0;
 	GDI_NeuroSim=0; 
 	GDI=1;
+	//GDI=0;
 	
 	levelOutput = 32;                   // # of levels of the multilevelSenseAmp output, should be in 2^N forms; e.g. 32 levels --> 5-bit ADC
 	cellBit = 1;                        // precision of memory device 
@@ -148,7 +149,7 @@ Param::Param() {
 
 	buswidthforce=1;
 
-	filename="test_031624";
+	filename="test_032124";
 
 const int
 file=2;
